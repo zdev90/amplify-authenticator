@@ -1,8 +1,8 @@
 # Cognito Auth App
 
-Auth application to authenticate several websites and mobile apps.\
+Auth application to authenticate several websites and mobile apps.
 
-This is a serverless project using the Serverless framework(sst.dev) and authentication is based on standard JWT token using AWS Amplify and Amazon Cognito.\
+This is a serverless project using the Serverless framework(sst.dev) and authentication is based on standard JWT token using AWS Amplify and Amazon Cognito.
 
 This app can be integrated with any application supporting oAuth2 and provides Single Sign On(SSO) on all services.
 
