@@ -1,0 +1,99 @@
+@media all {
+  .Login {
+    background-image: url("/src/assets/img/login/frame-313315.png");
+    background: -webkit-image-set(
+      url("/src/assets/img/login/frame-313315@2x.png") 2x,
+      url("/src/assets/img/login/frame-313315@3x.png") 3x
+    );
+    background-color: var(--neutral-black);
+    min-height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    padding: 22px 0 0 0;
+  }
+
+  .Login form {
+    margin: 110px auto 0 auto;
+    max-width: 554px;
+    background-color: #fff;
+    padding: 32px 32px 50px;
+    border: solid 1px #dadada;
+  }
+
+  .Login form .Login-text {
+    align-self: stretch;
+    flex-grow: 0;
+    font-family: AmazonEmberDisplay;
+    font-size: 16px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+    color: #000;
+    margin: 48px 0;
+  }
+
+  .Login .Footer {
+    min-height: 56px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 199px 0 0 3px;
+    padding: 18px 0;
+    border-top-style: solid;
+    border-top-width: 2px;
+    border-image-source: linear-gradient(
+      to right,
+      #2cd266 0%,
+      #48afe5 49%,
+      #e50086 100%
+    );
+    border-image-slice: 1;
+  }
+
+  .Login .Footer .nav .nav-item .nav-link {
+    height: 21px;
+    flex-grow: 0;
+    padding: 0.5px 0;
+    font-family: AmazonEmberDisplay;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+    color: #c3cbce;
+    margin-right: 19px;
+  }
+
+  .Login .Footer .Copyright {
+    height: 21px;
+    flex-grow: 0;
+    padding: 0.5px 0;
+    font-family: AmazonEmberDisplay;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+    color: #c3cbce;
+  }
+}
+
+@media all and (max-width: 480px) {
+  .Login .Footer {
+    flex-direction: column;
+  }
+
+  .Login .Footer .Copyright {
+    margin-top: 20px;
+  }
+}
