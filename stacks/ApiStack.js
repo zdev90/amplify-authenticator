@@ -4,7 +4,7 @@ import { CodesStack } from "./CodesStack";
 
 export function ApiStack({ stack, app }) {
   const { auth } = use(AuthStack);
-  const { codesTable } = use(CodesStack);
+  const { codesTable, encryptionKey } = use(CodesStack);
 
   // Create an HTTP API
   const api = new Api(stack, "Api", {
@@ -17,18 +17,26 @@ export function ApiStack({ stack, app }) {
           IDENTITY_POOL_ID: auth.cognitoIdentityPoolId || "",
           USER_POOL_CLIENT_ID: auth.userPoolClientId,
           CODES_TABLE_NAME: codesTable.tableName,
+          ENCRYPTION_KEY_ID: encryptionKey.keyId,
         },
       },
     },
     routes: {
-      "POST /oauth2/authorize": "packages/functions/src/authorize.handler",
+      "GET /oauth2/authorize": "packages/functions/src/authorize.handler",
       "POST /oauth2/token": "packages/functions/src/token.handler",
       "POST /storage": "packages/functions/src/storage.handler",
     },
   });
 
+  api.attachPermissions(["cognito-idp", codesTable, "kms:*"]);
+
   // Show the endpoint in the output
   stack.addOutputs({
     ApiEndpoint: api.url,
   });
+
+  return {
+    api,
+    apiUrl: api.url,
+  };
 }

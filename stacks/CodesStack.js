@@ -1,6 +1,7 @@
 import { Table } from "sst/constructs";
+import * as kms from "aws-cdk-lib/aws-kms";
 
-export function CodesStack({ stack }) {
+export function CodesStack({ stack, app }) {
   // Create the DynamoDB table
   const codesTable = new Table(stack, "codes", {
     fields: {
@@ -25,7 +26,16 @@ export function CodesStack({ stack }) {
     stream: false,
   });
 
+  const encryptionKey = new kms.Key(
+    stack,
+    "alias/authAppTokenStorageKey-" + app.stage,
+    {
+      enableKeyRotation: true,
+    }
+  );
+
   return {
     codesTable,
+    encryptionKey,
   };
 }

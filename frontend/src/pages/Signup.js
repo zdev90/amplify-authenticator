@@ -10,6 +10,12 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import Navbar from "../components/Navbar";
+import {
+  storeTokens,
+  setTokenCookie,
+  setRefreshTokenCookie,
+} from "../lib/tokenHelper";
+
 import "./Signup.css";
 
 const schema = Yup.object().shape({
@@ -73,9 +79,57 @@ export default function Signup({ userHasAuthenticated }) {
     try {
       await Auth.confirmSignUp(newUser.email, fields.confirmationCode);
       await Auth.signIn(newUser.email, newUser.password);
-      setIsLoading(false);
       userHasAuthenticated(true);
-      history.push("/");
+
+      // Get tokens
+      let authInfo = await Auth.currentSession();
+      let idToken = authInfo.idToken.jwtToken;
+      let accessToken = authInfo.accessToken.jwtToken;
+      let refreshToken = authInfo.refreshToken.token;
+      if (idToken && accessToken && refreshToken) {
+        setTokenCookie("id_token", idToken);
+        setTokenCookie("access_token", accessToken);
+
+        /*
+         * Set the refresh token cookie. Refresh token cannot be parsed for an an expiry so use the access token to get an expiry.
+         * Although the refresh token has a different (longer) expiry than the access token, this is for the purpose of fast SSO,
+         * so the refresh token cookie will get set again when the id or access token cookie expires
+         */
+        setRefreshTokenCookie(refreshToken, accessToken);
+      } else {
+        console.error(
+          "Inconsistent application state: Tokens missing from current session"
+        );
+        return;
+      }
+
+      // Store tokens and redirect
+      let queryStringParams = new URLSearchParams(window.location.search);
+      let redirectUri = queryStringParams.get("redirect_uri");
+      let authCode = queryStringParams.get("authorization_code");
+      if (authCode && redirectUri) {
+        const response = await storeTokens(
+          authCode,
+          idToken,
+          accessToken,
+          refreshToken
+        );
+
+        if (response.status === 200) {
+          window.location.replace(redirectUri + "/?code=" + authCode);
+        } else {
+          console.error(
+            "Could not store tokens. Server response: " + response.data
+          );
+        }
+      } else {
+        /*
+         * Sign in directly to broker (not from redirect from client as part of oauth2 flow)
+         */
+        // history.push("/");
+      }
+
+      setIsLoading(false);
     } catch (e) {
       alert(e);
       setIsLoading(false);

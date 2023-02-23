@@ -1,5 +1,3 @@
-import { SSTConfig } from "sst";
-import { Api } from "sst/constructs";
 import { AuthStack } from "./stacks/AuthStack";
 import { ApiStack } from "./stacks/ApiStack";
 import { PortalStack } from "./stacks/PortalStack";

@@ -1,7 +1,9 @@
 import AWS from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
 import jwt_decode from "jwt-decode";
-import AmazonCognitoIdentity from "amazon-cognito-identity-js";
+import * as AmazonCognitoIdentity from "amazon-cognito-identity-js";
+import { Config } from "sst/node/config";
+
 import { encryptToken } from "../../utils/encrypt";
 
 const CODE_LIFE = 600000; // How long in milliseconds the authorization code can be used to retrieve the tokens from the table (10 minutes)
@@ -253,7 +255,8 @@ export const handler = async (event, context) => {
       statusCode: 302,
       headers: {
         Location:
-          "/?client_id=" +
+          Config.PORTAL_URL +
+          "/login?client_id=" +
           client_id +
           "&redirect_uri=" +
           redirect_uri +

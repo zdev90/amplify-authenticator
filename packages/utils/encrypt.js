@@ -5,7 +5,7 @@ const kmsClient = new AWS.KMS();
 
 export async function encryptToken(token) {
   const params = {
-    KeyId: "alias/authAppTokenStorageKey-" + process.env.ENV,
+    KeyId: process.env.ENCRYPTION_KEY_ID,
     Plaintext: token,
   };
   return new Promise(function (resolve, reject) {
