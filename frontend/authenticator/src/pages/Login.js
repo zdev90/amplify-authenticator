@@ -9,6 +9,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import Navbar from "../components/Navbar";
+import VerificationForm from "../components/VerificationForm";
 import {
   storeTokens,
   setTokenCookie,
@@ -21,20 +22,22 @@ const schema = Yup.object().shape({
   password: Yup.string()
     .min(2, "Password is too short!")
     .max(50, "Password is too long!")
-    .required("Password is required"),
-  email: Yup.string().email("Email is invalid!").required("Email is required"),
+    .required("Password is required!"),
+  email: Yup.string().email("Email is invalid!").required("Email is required!"),
 });
 
 export default function Login({ userHasAuthenticated, isAuthenticated }) {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
+  const [verifyCode, setVerifyCode] = useState(false);
+  const [user, setUser] = useState(null);
 
   async function submit(fields) {
     setIsLoading(true);
 
     try {
       // Log the user in
-      const user = await Auth.signIn(fields.email, fields.password);
+      await Auth.signIn(fields.email, fields.password);
       userHasAuthenticated(true);
 
       // Get tokens
@@ -93,9 +96,136 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
 
       setIsLoading(false);
     } catch (e) {
-      alert(e);
+      if (e.message === "User is not confirmed.") {
+        setUser({ ...fields });
+        setVerifyCode(true);
+      } else {
+        alert(e);
+      }
       setIsLoading(false);
     }
+  }
+
+  function renderLoginForm() {
+    return (
+      <Formik
+        enableReinitialize
+        initialValues={{
+          email: "",
+          password: "",
+        }}
+        onSubmit={submit}
+        validationSchema={schema}
+        validateOnChange={false}
+      >
+        {({
+          handleSubmit,
+          handleChange,
+          handleBlur,
+          values,
+          touched,
+          isValid,
+          errors,
+        }) => (
+          <Form noValidate onSubmit={handleSubmit}>
+            <div className="title">Login</div>
+            <Form.Group
+              size="lg"
+              controlId="email"
+              className="position-relative"
+            >
+              <Form.Label>
+                Email <span>*</span>
+              </Form.Label>
+              <Form.Control
+                required
+                autoFocus
+                type="email"
+                value={values.email}
+                onChange={handleChange}
+                disabled={isLoading}
+                isValid={touched.email && !errors.email}
+                isInvalid={errors.email}
+              />
+              <Form.Control.Feedback type="invalid" tooltip>
+                {errors.email}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group
+              size="lg"
+              controlId="password"
+              className="position-relative"
+            >
+              <Form.Label>
+                Password <span>*</span>
+              </Form.Label>
+              <Form.Control
+                required
+                type="password"
+                value={values.password}
+                onChange={handleChange}
+                disabled={isLoading}
+                isValid={touched.password && !errors.password}
+                isInvalid={errors.password}
+              />
+              <Form.Control.Feedback type="invalid" tooltip>
+                {errors.password}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Text className="Login-text">
+              By logging in, you agree to the{" "}
+              <a href="https://aws.amazon.com/events/terms/" target="_blank">
+                AWS Event Terms & Conditions
+              </a>
+              ,{" "}
+              <a href="https://aws.amazon.com/codeofconduct/" target="_blank">
+                AWS Code of Conduct
+              </a>
+              , and the{" "}
+              <a href="https://aws.amazon.com/privacy/" target="_blank">
+                AWS Privacy Notice
+              </a>
+              .
+            </Form.Text>
+            <Button
+              block
+              size="lg"
+              type="submit"
+              disabled={isLoading}
+              variant="primary"
+            >
+              Login
+            </Button>
+            <Button
+              block
+              size="lg"
+              type="button"
+              disabled={isLoading}
+              variant="outline-primary"
+              onClick={() =>
+                history.push({
+                  pathname: "/register",
+                  search: window.location.search,
+                })
+              }
+              className="mt-3"
+            >
+              Create account
+            </Button>
+            <Button
+              size="lg"
+              type="button"
+              disabled={isLoading}
+              variant="link"
+              onClick={() => {}}
+              className="mt-3 mx-auto"
+            >
+              Forgot password?
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    );
   }
 
   return (
@@ -103,135 +233,40 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
       <Container>
         <Navbar />
 
-        <Formik
-          enableReinitialize
-          initialValues={{
-            email: "",
-            password: "",
-          }}
-          onSubmit={submit}
-          validationSchema={schema}
-          validateOnChange={false}
-        >
-          {({
-            handleSubmit,
-            handleChange,
-            handleBlur,
-            values,
-            touched,
-            isValid,
-            errors,
-          }) => (
-            <Form noValidate onSubmit={handleSubmit}>
-              <div className="title">Login</div>
-              <Form.Group
-                size="lg"
-                controlId="email"
-                className="position-relative"
-              >
-                <Form.Label>
-                  Email <span>*</span>
-                </Form.Label>
-                <Form.Control
-                  required
-                  autoFocus
-                  type="email"
-                  value={values.email}
-                  onChange={handleChange}
-                  disabled={isLoading}
-                  isValid={touched.email && !errors.email}
-                  isInvalid={errors.email}
-                />
-                <Form.Control.Feedback type="invalid" tooltip>
-                  {errors.email}
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group
-                size="lg"
-                controlId="password"
-                className="position-relative"
-              >
-                <Form.Label>
-                  Password <span>*</span>
-                </Form.Label>
-                <Form.Control
-                  required
-                  type="password"
-                  value={values.password}
-                  onChange={handleChange}
-                  disabled={isLoading}
-                  isValid={touched.password && !errors.password}
-                  isInvalid={errors.password}
-                />
-                <Form.Control.Feedback type="invalid" tooltip>
-                  {errors.password}
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Text className="Login-text">
-                By logging in, you agree to the{" "}
-                <a href="https://aws.amazon.com/events/terms/" target="_blank">
-                  AWS Event Terms & Conditions
-                </a>
-                ,{" "}
-                <a href="https://aws.amazon.com/codeofconduct/" target="_blank">
-                  AWS Code of Conduct
-                </a>
-                , and the{" "}
-                <a href="https://aws.amazon.com/privacy/" target="_blank">
-                  AWS Privacy Notice
-                </a>
-                .
-              </Form.Text>
-              <Button
-                block
-                size="lg"
-                type="submit"
-                disabled={isLoading}
-                variant="primary"
-              >
-                Login
-              </Button>
-              <Button
-                block
-                size="lg"
-                type="button"
-                disabled={isLoading}
-                variant="outline-primary"
-                onClick={() => history.push("/register")}
-                className="mt-3"
-              >
-                Create account
-              </Button>
-              <Button
-                size="lg"
-                type="button"
-                disabled={isLoading}
-                variant="link"
-                onClick={() => {}}
-                className="mt-3 mx-auto"
-              >
-                Forgot password?
-              </Button>
-            </Form>
-          )}
-        </Formik>
+        {verifyCode && (
+          <VerificationForm
+            userHasAuthenticated={userHasAuthenticated}
+            user={user}
+          />
+        )}
+        {!verifyCode && renderLoginForm()}
 
         <div className="Footer">
           <Nav defaultActiveKey="/home" as="ul">
             <Nav.Item as="li">
-              <Nav.Link href="#">Cookie Preferences</Nav.Link>
+              <Nav.Link href="https://aws.amazon.com/legal/cookies/">
+                Cookie Preferences
+              </Nav.Link>
             </Nav.Item>
             <Nav.Item as="li">
-              <Nav.Link href="#">Privacy Policy</Nav.Link>
+              <Nav.Link href="https://aws.amazon.com/privacy/">
+                Privacy Policy
+              </Nav.Link>
             </Nav.Item>
             <Nav.Item as="li">
-              <Nav.Link href="#">Site Terms</Nav.Link>
+              <Nav.Link href="https://aws.amazon.com/terms/">
+                Site Terms
+              </Nav.Link>
             </Nav.Item>
             <Nav.Item as="li">
-              <Nav.Link href="#">Terms & Conditions</Nav.Link>
+              <Nav.Link href="https://aws.amazon.com/service-terms/">
+                Terms & Conditions
+              </Nav.Link>
             </Nav.Item>
             <Nav.Item as="li">
-              <Nav.Link href="#">Code of Conduct</Nav.Link>
+              <Nav.Link href="https://aws.amazon.com/codeofconduct/">
+                Code of Conduct
+              </Nav.Link>
             </Nav.Item>
           </Nav>
 

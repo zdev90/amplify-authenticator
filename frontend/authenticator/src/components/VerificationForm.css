@@ -1,0 +1,35 @@
+@media all {
+  .Confirm-registration {
+    margin: 0 auto;
+    padding: 32px;
+    border: solid 1px #dadada;
+    background-color: #fff;
+    max-width: 711px;
+  }
+
+  .Confirm-registration .Confirm-text {
+    align-self: stretch;
+    flex-grow: 0;
+    font-family: AmazonEmberDisplay;
+    font-size: 16px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+    color: #000;
+    margin: 16px 0;
+  }
+
+  .Confirm-registration .alert {
+    font-family: AmazonEmberDisplay;
+    font-size: 16px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+  }
+}

@@ -3,51 +3,39 @@ import { Auth } from "aws-amplify";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import Navbar from "../components/Navbar";
-import {
-  storeTokens,
-  setTokenCookie,
-  setRefreshTokenCookie,
-} from "../lib/tokenHelper";
+import VerificationForm from "../components/VerificationForm";
 
 import "./Signup.css";
 
 const schema = Yup.object().shape({
   firstName: Yup.string()
-    .min(3, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
+    .min(3, "First name is too short!")
+    .max(50, "First name is too long!")
+    .required("First name is required!"),
   lastName: Yup.string()
-    .min(3, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
+    .min(3, "Last name is too short!")
+    .max(50, "Last name is too long!")
+    .required("Last name is required!"),
   password: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
+    .min(2, "Password is too short!")
+    .max(50, "Password is too long!")
+    .required("Password is required!"),
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  email: Yup.string().email("Invalid email").required("Required"),
+    .oneOf([Yup.ref("password"), null], "Passwords must match!")
+    .min(2, "Password confirmation is too short!")
+    .max(50, "Password confirmation is too long!")
+    .required("Password confirmation is required!"),
+  email: Yup.string().email("Email is invalid!").required("Email is required!"),
   confirmAge: Yup.bool()
     .required()
     .oneOf([true], "You must be at least 18 years of age!"),
 });
 
-const confirmSchema = Yup.object().shape({
-  confirmationCode: Yup.string().required("Required"),
-});
-
 export default function Signup({ userHasAuthenticated }) {
-  const history = useHistory();
   const [newUser, setNewUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -75,144 +63,7 @@ export default function Signup({ userHasAuthenticated }) {
     }
   }
 
-  async function confirm(fields) {
-    setIsLoading(true);
-
-    // Check the user's confirmation code
-    try {
-      await Auth.confirmSignUp(newUser.email, fields.confirmationCode);
-      await Auth.signIn(newUser.email, newUser.password);
-      userHasAuthenticated(true);
-
-      // Get tokens
-      let authInfo = await Auth.currentSession();
-      let idToken = authInfo.idToken.jwtToken;
-      let accessToken = authInfo.accessToken.jwtToken;
-      let refreshToken = authInfo.refreshToken.token;
-      if (idToken && accessToken && refreshToken) {
-        setTokenCookie("id_token", idToken);
-        setTokenCookie("access_token", accessToken);
-
-        /*
-         * Set the refresh token cookie. Refresh token cannot be parsed for an an expiry so use the access token to get an expiry.
-         * Although the refresh token has a different (longer) expiry than the access token, this is for the purpose of fast SSO,
-         * so the refresh token cookie will get set again when the id or access token cookie expires
-         */
-        setRefreshTokenCookie(refreshToken, accessToken);
-      } else {
-        console.error(
-          "Inconsistent application state: Tokens missing from current session"
-        );
-        return;
-      }
-
-      // Store tokens and redirect
-      let queryStringParams = new URLSearchParams(window.location.search);
-      let redirectUri = queryStringParams.get("redirect_uri");
-      let authCode = queryStringParams.get("authorization_code");
-      let clientState = queryStringParams.get("state");
-      if (authCode && redirectUri) {
-        const response = await storeTokens(
-          authCode,
-          idToken,
-          accessToken,
-          refreshToken
-        );
-
-        if (response.status === 200) {
-          window.location.replace(
-            redirectUri +
-              "/?code=" +
-              authCode +
-              (clientState !== undefined ? "&state=" + clientState : "")
-          );
-        } else {
-          console.error(
-            "Could not store tokens. Server response: " + response.data
-          );
-        }
-      } else {
-        /*
-         * Sign in directly to broker (not from redirect from client as part of oauth2 flow)
-         */
-        // history.push("/");
-      }
-
-      setIsLoading(false);
-    } catch (e) {
-      alert(e);
-      setIsLoading(false);
-    }
-  }
-
-  function renderConfirmationForm() {
-    return (
-      <Formik
-        enableReinitialize
-        initialValues={{
-          confirmationCode: "",
-        }}
-        onSubmit={confirm}
-        validationSchema={confirmSchema}
-        validateOnChange={false}
-      >
-        {({
-          handleSubmit,
-          handleChange,
-          handleBlur,
-          values,
-          touched,
-          isValid,
-          errors,
-        }) => (
-          <Form
-            noValidate
-            onSubmit={handleSubmit}
-            className="Confirm-registration"
-          >
-            <div className="title">Verify your email</div>
-            <Form.Text className="Confirm-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam.
-            </Form.Text>
-            <Form.Group
-              controlId="confirmationCode"
-              size="lg"
-              className="position-relative"
-            >
-              <Form.Label>
-                Enter your verification code <span>*</span>
-              </Form.Label>
-              <Form.Control
-                autoFocus
-                type="tel"
-                value={values.confirmationCode}
-                onChange={handleChange}
-                disabled={isLoading}
-                isValid={touched.confirmationCode && !errors.confirmationCode}
-                isInvalid={errors.confirmationCode}
-              />
-              <Form.Control.Feedback type="invalid" tooltip>
-                {errors.confirmationCode}
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Button
-              block
-              size="lg"
-              type="submit"
-              variant="primary"
-              disabled={isLoading}
-            >
-              Verify Account
-            </Button>
-          </Form>
-        )}
-      </Formik>
-    );
-  }
-
-  function renderForm() {
+  function renderRegisterForm() {
     return (
       <Formik
         enableReinitialize
@@ -410,7 +261,14 @@ export default function Signup({ userHasAuthenticated }) {
     <div className="Signup">
       <Container>
         <Navbar variant="dark" />
-        {newUser === null ? renderForm() : renderConfirmationForm()}
+        {newUser === null ? (
+          renderRegisterForm()
+        ) : (
+          <VerificationForm
+            userHasAuthenticated={userHasAuthenticated}
+            user={newUser}
+          />
+        )}
       </Container>
     </div>
   );

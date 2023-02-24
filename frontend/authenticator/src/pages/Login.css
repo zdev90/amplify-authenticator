@@ -72,6 +72,10 @@
     margin-right: 19px;
   }
 
+  .Login .Footer .nav .nav-item .nav-link:hover {
+    text-decoration: underline;
+  }
+
   .Login .Footer .Copyright {
     height: 21px;
     flex-grow: 0;
