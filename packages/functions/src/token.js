@@ -2,8 +2,9 @@ import AWS from "aws-sdk";
 import qs from "querystring";
 import { decryptToken, base64URLEncode, sha256 } from "../../utils/encrypt";
 
+import { cognitoSP } from "../../utils/cognitoServiceProvider";
+
 var docClient = new AWS.DynamoDB.DocumentClient();
-var cognitoSP = new AWS.CognitoIdentityServiceProvider();
 
 export const handler = async (event, context) => {
   if (!(event && event.body)) {
@@ -13,7 +14,9 @@ export const handler = async (event, context) => {
     };
   }
 
-  var jsonBody = qs.parse(event.body);
+  var buff = Buffer.from(event.body, "base64");
+  var eventBodyStr = buff.toString('UTF-8');
+  var jsonBody = qs.parse(eventBodyStr);
   var grant_type = jsonBody.grant_type;
   var client_id = jsonBody.client_id;
 

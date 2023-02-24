@@ -18,15 +18,35 @@ Make sure your local machine has `Node.js 16` and `npm 7` installed.
 yarn install
 ```
 
+### Set the AWS environmental variables
+
+```sh
+export AWS_ACCESS_KEY_ID="ASIAXQxxx"
+export AWS_SECRET_ACCESS_KEY="pgs3CiM8knxxx"
+export AWS_SESSION_TOKEN="IQoJb3JpZ2luX2VjExxx"
+```
+
+### Create cognito app client
+
+After the first deployment, add an app client and set up the hosted UI([documentation](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-configuring-app-integration.html))
+
+For development purpose, you can set callback URLs as `http://localhost:3001`
+
+Retrieve app client id and set `REACT_APP_USER_POOL_CLIENT_ID` environment variable in `frontend/authenticator-client/.env`
+
 ## Commands
 
 ### `npm run dev`
 
 Starts the Live Lambda Development environment.
 
-### `npm run portal`
+### `npm run auth-app`
 
-Run the frontend app in development environment.
+Run the frontend auth app in development environment.
+
+### `npm run auth-app-client`
+
+Run the frontend client app in development environment.
 
 ### `npm run build`
 

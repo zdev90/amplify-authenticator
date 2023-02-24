@@ -19,10 +19,10 @@ import "./Login.css";
 
 const schema = Yup.object().shape({
   password: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  email: Yup.string().email("Invalid email").required("Required"),
+    .min(2, "Password is too short!")
+    .max(50, "Password is too long!")
+    .required("Password is required"),
+  email: Yup.string().email("Email is invalid!").required("Email is required"),
 });
 
 export default function Login({ userHasAuthenticated, isAuthenticated }) {
@@ -63,6 +63,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
       let queryStringParams = new URLSearchParams(window.location.search);
       let redirectUri = queryStringParams.get("redirect_uri");
       let authCode = queryStringParams.get("authorization_code");
+      let clientState = queryStringParams.get("state");
       if (authCode && redirectUri) {
         const response = await storeTokens(
           authCode,
@@ -72,7 +73,12 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
         );
 
         if (response.status === 200) {
-          window.location.replace(redirectUri + "/?code=" + authCode);
+          window.location.replace(
+            redirectUri +
+              "/?code=" +
+              authCode +
+              (clientState !== undefined ? "&state=" + clientState : "")
+          );
         } else {
           console.error(
             "Could not store tokens. Server response: " + response.data
@@ -162,11 +168,19 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Text className="Login-text">
-                By logging in, you agree to the AWS Event Terms & Conditions,
-                AWS Code of Conduct, and the AWS Privacy Notice.
-                <br />
-                <br />
-                Open support chat for assistance.
+                By logging in, you agree to the{" "}
+                <a href="https://aws.amazon.com/events/terms/" target="_blank">
+                  AWS Event Terms & Conditions
+                </a>
+                ,{" "}
+                <a href="https://aws.amazon.com/codeofconduct/" target="_blank">
+                  AWS Code of Conduct
+                </a>
+                , and the{" "}
+                <a href="https://aws.amazon.com/privacy/" target="_blank">
+                  AWS Privacy Notice
+                </a>
+                .
               </Form.Text>
               <Button
                 block
@@ -176,6 +190,27 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
                 variant="primary"
               >
                 Login
+              </Button>
+              <Button
+                block
+                size="lg"
+                type="button"
+                disabled={isLoading}
+                variant="outline-primary"
+                onClick={() => history.push("/register")}
+                className="mt-3"
+              >
+                Create account
+              </Button>
+              <Button
+                size="lg"
+                type="button"
+                disabled={isLoading}
+                variant="link"
+                onClick={() => {}}
+                className="mt-3 mx-auto"
+              >
+                Forgot password?
               </Button>
             </Form>
           )}

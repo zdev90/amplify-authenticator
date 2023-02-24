@@ -25,6 +25,7 @@ export function ApiStack({ stack, app }) {
       "GET /oauth2/authorize": "packages/functions/src/authorize.handler",
       "POST /oauth2/token": "packages/functions/src/token.handler",
       "POST /storage": "packages/functions/src/storage.handler",
+      "GET /logout": "packages/functions/src/logout.handler",
     },
   });
 

@@ -51,3 +51,12 @@ export async function decryptToken(token) {
     });
   });
 }
+
+export function urlSafeDecode(hex) {
+  return hex
+    .match(/.{2}/g)
+    .map(function (char) {
+      return String.fromCharCode(parseInt(char, 16));
+    })
+    .join("");
+}

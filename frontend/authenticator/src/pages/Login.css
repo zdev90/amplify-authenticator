@@ -86,6 +86,11 @@
     text-align: left;
     color: #c3cbce;
   }
+
+  .Login form a {
+    color: #000 !important;
+    text-decoration: underline;
+  }
 }
 
 @media all and (max-width: 480px) {

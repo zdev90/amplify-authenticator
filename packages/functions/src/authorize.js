@@ -4,39 +4,13 @@ import jwt_decode from "jwt-decode";
 import * as AmazonCognitoIdentity from "amazon-cognito-identity-js";
 import { Config } from "sst/node/config";
 
-import { encryptToken } from "../../utils/encrypt";
+import { encryptToken, urlSafeDecode } from "../../utils/encrypt";
+import { verifyClient } from "../../utils/cognitoServiceProvider";
 
 const CODE_LIFE = 600000; // How long in milliseconds the authorization code can be used to retrieve the tokens from the table (10 minutes)
 const RECORD_LIFE = 900000; // How long in milliseconds the record lasts in the dynamoDB table (15 minutes)
 
-var cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 var docClient = new AWS.DynamoDB.DocumentClient();
-
-async function verifyClient(client_id, redirect_uri) {
-  var data;
-  var params = {
-    ClientId: client_id,
-    UserPoolId: process.env.USER_POOL_ID,
-  };
-
-  try {
-    data = await cognitoidentityserviceprovider
-      .describeUserPoolClient(params)
-      .promise();
-    if (data.UserPoolClient && data.UserPoolClient.CallbackURLs) {
-      for (var i = 0; i < data.UserPoolClient.CallbackURLs.length; i++) {
-        if (data.UserPoolClient.CallbackURLs[i] === redirect_uri) {
-          // If we have a URL that match it is a success
-          return true;
-        }
-      }
-    }
-  } catch (error) {
-    console.error(error); // Most probable reason, the client_id doesn't exist in the Cognito user pool
-  }
-
-  return false;
-}
 
 async function getCookiesFromHeader(headers) {
   if (
@@ -99,6 +73,18 @@ function insertStateIfAny(event) {
   }
 
   return stateQueryString;
+}
+
+function parseAction(event) {
+  const state = event.queryStringParameters.state;
+  const states = state.split("-");
+  if (states[1]) {
+    const action = urlSafeDecode(states[1]);
+    if (action === "register") {
+      return "register";
+    }
+  }
+  return "login";
 }
 
 export const handler = async (event, context) => {
@@ -256,7 +242,9 @@ export const handler = async (event, context) => {
       headers: {
         Location:
           Config.PORTAL_URL +
-          "/login?client_id=" +
+          "/" +
+          parseAction(event) +
+          "?client_id=" +
           client_id +
           "&redirect_uri=" +
           redirect_uri +
