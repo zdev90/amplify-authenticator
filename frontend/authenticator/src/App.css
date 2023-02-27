@@ -122,7 +122,6 @@ form .form-group .form-control {
 }
 
 form .from-group .form-check .form-check-input {
-
 }
 
 form .form-group .form-control.is-invalid {
@@ -241,4 +240,9 @@ form .btn-link:focus {
 
 .position-relative {
   position: relative;
+}
+
+.form-control.is-invalid,
+.form-control.is-valid {
+  background-image: none !important;
 }

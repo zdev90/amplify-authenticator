@@ -3,6 +3,7 @@ import { Auth } from "aws-amplify";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
+import InputGroup from "react-bootstrap/InputGroup";
 import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -10,6 +11,7 @@ import * as Yup from "yup";
 import Navbar from "../components/Navbar";
 import VerificationForm from "../components/VerificationForm";
 import Footer from "../components/Footer";
+import PasswordInput from "../components/PasswordInput";
 import {
   storeTokens,
   setTokenCookie,
@@ -129,6 +131,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
         }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <div className="title">Login</div>
+
             <Form.Group
               size="lg"
               controlId="email"
@@ -151,6 +154,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
                 {errors.email}
               </Form.Control.Feedback>
             </Form.Group>
+
             <Form.Group
               size="lg"
               controlId="password"
@@ -159,9 +163,8 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
               <Form.Label>
                 Password <span>*</span>
               </Form.Label>
-              <Form.Control
+              <PasswordInput
                 required
-                type="password"
                 value={values.password}
                 onChange={handleChange}
                 disabled={isLoading}
@@ -172,6 +175,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
                 {errors.password}
               </Form.Control.Feedback>
             </Form.Group>
+
             <Form.Text className="Login-text">
               By logging in, you agree to the{" "}
               <a href="https://aws.amazon.com/events/terms/" target="_blank">
@@ -187,6 +191,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
               </a>
               .
             </Form.Text>
+
             <Button
               block
               size="lg"
@@ -196,6 +201,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
             >
               Login
             </Button>
+
             <Button
               block
               size="lg"
@@ -212,6 +218,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
             >
               Create account
             </Button>
+
             <Button
               size="lg"
               type="button"

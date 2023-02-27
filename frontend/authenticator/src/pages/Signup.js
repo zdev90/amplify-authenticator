@@ -8,6 +8,7 @@ import * as Yup from "yup";
 
 import Navbar from "../components/Navbar";
 import VerificationForm from "../components/VerificationForm";
+import PasswordInput from "../components/PasswordInput";
 
 import "./Signup.css";
 
@@ -166,9 +167,8 @@ export default function Signup({ userHasAuthenticated }) {
               <Form.Label>
                 Password <span>*</span>
               </Form.Label>
-              <Form.Control
+              <PasswordInput
                 required
-                type="password"
                 value={values.password}
                 onChange={handleChange}
                 disabled={isLoading}
@@ -188,9 +188,8 @@ export default function Signup({ userHasAuthenticated }) {
               <Form.Label>
                 Confirm Password <span>*</span>
               </Form.Label>
-              <Form.Control
+              <PasswordInput
                 required
-                type="password"
                 onChange={handleChange}
                 value={values.confirmPassword}
                 disabled={isLoading}

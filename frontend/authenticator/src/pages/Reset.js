@@ -8,13 +8,8 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import Navbar from "../components/Navbar";
-import VerificationForm from "../components/VerificationForm";
+import PasswordInput from "../components/PasswordInput";
 import Footer from "../components/Footer";
-import {
-  storeTokens,
-  setTokenCookie,
-  setRefreshTokenCookie,
-} from "../lib/tokenHelper";
 
 import "./Login.css";
 
@@ -124,6 +119,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
                 {errors.email}
               </Form.Control.Feedback>
             </Form.Group>
+
             <Button
               block
               size="lg"
@@ -133,6 +129,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
             >
               Send code
             </Button>
+
             <Button
               size="lg"
               type="button"
@@ -213,9 +210,8 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
               <Form.Label>
                 Password <span>*</span>
               </Form.Label>
-              <Form.Control
+              <PasswordInput
                 required
-                type="password"
                 value={values.password}
                 onChange={handleChange}
                 disabled={isLoading}
@@ -235,9 +231,8 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
               <Form.Label>
                 Confirm Password <span>*</span>
               </Form.Label>
-              <Form.Control
+              <PasswordInput
                 required
-                type="password"
                 onChange={handleChange}
                 value={values.confirmPassword}
                 disabled={isLoading}
