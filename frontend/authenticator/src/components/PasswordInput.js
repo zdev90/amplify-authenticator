@@ -9,7 +9,11 @@ export default function PasswordInput(props) {
   const [showPass, setShowPass] = useState(false);
 
   return (
-    <InputGroup className="Password-input">
+    <InputGroup
+      className={`Password-input ${props.isInvalid && "is-invalid"} ${
+        props.isValid && "is-valid"
+      }`}
+    >
       <Form.Control
         {...props}
         type={!showPass ? "password" : "text"}
