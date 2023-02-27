@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Signup from "./pages/Signup";
+import Reset from "./pages/Reset";
 import "./App.css";
 
 function App() {
@@ -45,6 +46,9 @@ function App() {
           </Route>
           <Route exact path="/logout">
             <Logout {...routeProps} />
+          </Route>
+          <Route exact path="/reset">
+            <Reset {...routeProps} />
           </Route>
         </Switch>
       </div>

@@ -146,6 +146,7 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
             <br />
             If you don't see it in your inbox, check your spam folder.
           </Form.Text>
+
           <Form.Group
             controlId="confirmationCode"
             size="lg"
@@ -167,6 +168,7 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
               {errors.confirmationCode}
             </Form.Control.Feedback>
           </Form.Group>
+
           <Button
             block
             size="lg"
@@ -177,6 +179,7 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
           >
             Verify Account
           </Button>
+          
           <Button
             size="lg"
             type="button"

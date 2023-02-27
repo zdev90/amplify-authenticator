@@ -4,12 +4,12 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { useHistory } from "react-router-dom";
-import Nav from "react-bootstrap/Nav";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import Navbar from "../components/Navbar";
 import VerificationForm from "../components/VerificationForm";
+import Footer from "../components/Footer";
 import {
   storeTokens,
   setTokenCookie,
@@ -217,7 +217,12 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
               type="button"
               disabled={isLoading}
               variant="link"
-              onClick={() => {}}
+              onClick={() =>
+                history.push({
+                  pathname: "/reset",
+                  search: window.location.search,
+                })
+              }
               className="mt-3 mx-auto"
             >
               Forgot password?
@@ -241,39 +246,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
         )}
         {!verifyCode && renderLoginForm()}
 
-        <div className="Footer">
-          <Nav defaultActiveKey="/home" as="ul">
-            <Nav.Item as="li">
-              <Nav.Link href="https://aws.amazon.com/legal/cookies/">
-                Cookie Preferences
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item as="li">
-              <Nav.Link href="https://aws.amazon.com/privacy/">
-                Privacy Policy
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item as="li">
-              <Nav.Link href="https://aws.amazon.com/terms/">
-                Site Terms
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item as="li">
-              <Nav.Link href="https://aws.amazon.com/service-terms/">
-                Terms & Conditions
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item as="li">
-              <Nav.Link href="https://aws.amazon.com/codeofconduct/">
-                Code of Conduct
-              </Nav.Link>
-            </Nav.Item>
-          </Nav>
-
-          <div className="Copyright">
-            © 2023, Amazon re:Inforce or its affiliates. All rights reserved
-          </div>
-        </div>
+        <Footer />
       </Container>
     </div>
   );
