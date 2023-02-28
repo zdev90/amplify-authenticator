@@ -18,6 +18,8 @@ Make sure your local machine has `Node.js 16` and `npm 7` installed.
 yarn install
 ```
 
+In stall in the project root, `frontend/authenticator`, and `frontend/authenticator-client`.
+
 ### Set the AWS environmental variables
 
 ```sh
