@@ -33,12 +33,16 @@
     line-height: 1.5;
     letter-spacing: normal;
     text-align: left;
-    color: #000;
+    color: #16191f;
     margin: 48px 0;
   }
 
   .Login form a {
-    color: #000 !important;
+    color: #16191f !important;
     text-decoration: underline;
+  }
+
+  .Login form a:hover {
+    color: #545b64 !important;
   }
 }

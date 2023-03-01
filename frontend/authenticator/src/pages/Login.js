@@ -120,7 +120,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
         }}
         onSubmit={submit}
         validationSchema={schema}
-        validateOnChange={false}
+        validateOnChange={true}
       >
         {({
           handleSubmit,

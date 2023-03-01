@@ -16,11 +16,28 @@
 
   .Signup-form .btn {
     margin-top: 48px;
+    background-color: #f90 !important;
+    color: #16191f !important;
+    border-color: #f90 !important;
+  }
+
+  .Signup-form .btn:hover,
+  .Signup-form .btn:focus,
+  .Signup-form .btn:active {
+    background-color: #ec7211 !important;
+    color: #16191f !important;
+    border-color: #ec7211 !important;
   }
 
   .Signup-form a {
-    color: #000 !important;
+    color: #16191f !important;
     text-decoration: underline;
+  }
+
+  .Signup-form a:hover,
+  .Signup-form a:focus,
+  .Signup-form a:active {
+    color: #545b64 !important;
   }
 
   .Signup .Signup-info {
@@ -33,7 +50,7 @@
     line-height: 1.5;
     letter-spacing: normal;
     text-align: left;
-    color: #000;
+    color: #16191f;
   }
 
   .Signup .Signup-info h3 {
