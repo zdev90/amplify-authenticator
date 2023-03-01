@@ -1,9 +1,9 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import Alert from 'react-bootstrap/Alert';
-import { useHistory } from "react-router-dom";
+import Alert from "react-bootstrap/Alert";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -16,24 +16,27 @@ import {
 import "./VerificationForm.css";
 
 const confirmSchema = Yup.object().shape({
-  confirmationCode: Yup.string().required("Verification code is required!"),
+  confirmationCode: Yup.string().required("Verification code is required"),
 });
 
 export default function VerificationForm({ userHasAuthenticated, user }) {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [isResent, setIsResent] = useState(false);
+  const [error, setError] = useState(null);
 
   async function resendCode() {
     setIsResent(false);
     setIsLoading(true);
+    setError(null);
 
     try {
       await Auth.resendSignUp(user.email);
       setIsResent(true);
       setIsLoading(false);
     } catch (e) {
-      alert(e);
+      console.error(e);
+      setError(e.message);
       setIsLoading(false);
     }
   }
@@ -41,6 +44,7 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
   async function confirm(fields) {
     setIsResent(false);
     setIsLoading(true);
+    setError(null);
 
     // Check the user's confirmation code
     try {
@@ -64,10 +68,9 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
          */
         setRefreshTokenCookie(refreshToken, accessToken);
       } else {
-        console.error(
+        throw new Error(
           "Inconsistent application state: Tokens missing from current session"
         );
-        return;
       }
 
       // Store tokens and redirect
@@ -91,7 +94,7 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
               (clientState !== undefined ? "&state=" + clientState : "")
           );
         } else {
-          console.error(
+          throw new Error(
             "Could not store tokens. Server response: " + response.data
           );
         }
@@ -99,12 +102,13 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
         /*
          * Sign in directly to broker (not from redirect from client as part of oauth2 flow)
          */
-        // history.push("/");
+        history.push("/");
       }
 
       setIsLoading(false);
     } catch (e) {
-      alert(e);
+      console.error(e);
+      setError(e.message);
       setIsLoading(false);
     }
   }
@@ -135,6 +139,17 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
         >
           <div className="title">Let's make sure it's you</div>
 
+          {error && (
+            <Alert
+              variant="danger"
+              onClose={() => setError(null)}
+              dismissible
+              className="m-0"
+            >
+              {error}
+            </Alert>
+          )}
+
           {isResent && (
             <Alert key="success" variant="success">
               The verification code has been sent again to your inbox.
@@ -153,7 +168,7 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
             className="position-relative"
           >
             <Form.Label>
-              verification code <span>*</span>
+              Verification code <span>*</span>
             </Form.Label>
             <Form.Control
               autoFocus
@@ -164,7 +179,7 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
               isValid={touched.confirmationCode && !errors.confirmationCode}
               isInvalid={errors.confirmationCode}
             />
-            <Form.Control.Feedback type="invalid" tooltip>
+            <Form.Control.Feedback type="invalid">
               {errors.confirmationCode}
             </Form.Control.Feedback>
           </Form.Group>
@@ -179,7 +194,7 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
           >
             Verify Account
           </Button>
-          
+
           <Button
             size="lg"
             type="button"

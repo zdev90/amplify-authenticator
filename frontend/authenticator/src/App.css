@@ -73,7 +73,7 @@ form .form-group .form-check .form-check-label {
   padding: 0 0 0 8px;
   font-family: AmazonEmberDisplay;
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 400;
   font-stretch: normal;
   font-style: normal;
   line-height: 1.35;
@@ -94,6 +94,18 @@ form .form-group .form-label span {
   font-stretch: normal;
   font-style: normal;
   line-height: 1.35;
+  letter-spacing: normal;
+  text-align: left;
+}
+
+form .form-group .form-label div {
+  color: rgb(104, 112, 120);
+  font-family: AmazonEmberDisplay;
+  font-size: 12px;
+  font-weight: 400;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 16px;
   letter-spacing: normal;
   text-align: left;
 }
@@ -130,6 +142,21 @@ form .form-group .form-control.is-invalid {
 
 form .form-group .form-control.is-valid {
   border-color: #28a745;
+}
+
+form .form-group .valid-feedback {
+  display: block;
+}
+
+form .form-group .valid-feedback,
+form .form-group .invalid-feedback {
+  font-family: AmazonEmberDisplay;
+  margin-top: 6px;
+}
+
+form .form-group .valid-feedback svg,
+form .form-group .invalid-feedback svg {
+  margin-right: 10px;
 }
 
 form .btn-primary {
@@ -245,4 +272,15 @@ form .btn-link:focus {
 .form-control.is-invalid,
 .form-control.is-valid {
   background-image: none !important;
+}
+
+.alert.alert-danger {
+  border-radius: 0;
+  color: #dc3545;
+  font-family: AmazonEmberDisplay;
+  font-weight: 400;
+}
+
+.alert.alert-danger button {
+  color: #dc3545;
 }

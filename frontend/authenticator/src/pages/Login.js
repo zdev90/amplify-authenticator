@@ -3,7 +3,7 @@ import { Auth } from "aws-amplify";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import InputGroup from "react-bootstrap/InputGroup";
+import Alert from "react-bootstrap/Alert";
 import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -22,10 +22,10 @@ import "./Login.css";
 
 const schema = Yup.object().shape({
   password: Yup.string()
-    .min(2, "Password is too short!")
-    .max(50, "Password is too long!")
-    .required("Password is required!"),
-  email: Yup.string().email("Email is invalid!").required("Email is required!"),
+    .min(2, "Password is too short")
+    .max(50, "Password is too long")
+    .required("Password is required"),
+  email: Yup.string().email("Email is invalid").required("Email is required"),
 });
 
 export default function Login({ userHasAuthenticated, isAuthenticated }) {
@@ -33,9 +33,11 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
   const [isLoading, setIsLoading] = useState(false);
   const [verifyCode, setVerifyCode] = useState(false);
   const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
 
   async function submit(fields) {
     setIsLoading(true);
+    setError(null);
 
     try {
       // Log the user in
@@ -58,10 +60,9 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
          */
         setRefreshTokenCookie(refreshToken, accessToken);
       } else {
-        console.error(
+        throw new Error(
           "Inconsistent application state: Tokens missing from current session"
         );
-        return;
       }
 
       // Store tokens and redirect
@@ -85,7 +86,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
               (clientState !== undefined ? "&state=" + clientState : "")
           );
         } else {
-          console.error(
+          throw new Error(
             "Could not store tokens. Server response: " + response.data
           );
         }
@@ -102,7 +103,8 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
         setUser({ ...fields });
         setVerifyCode(true);
       } else {
-        alert(e);
+        console.error(e);
+        setError(e.message);
       }
       setIsLoading(false);
     }
@@ -132,6 +134,17 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
           <Form noValidate onSubmit={handleSubmit}>
             <div className="title">Login</div>
 
+            {error && (
+              <Alert
+                variant="danger"
+                onClose={() => setError(null)}
+                dismissible
+                className="m-0"
+              >
+                {error}
+              </Alert>
+            )}
+
             <Form.Group
               size="lg"
               controlId="email"
@@ -150,7 +163,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
                 isValid={touched.email && !errors.email}
                 isInvalid={errors.email}
               />
-              <Form.Control.Feedback type="invalid" tooltip>
+              <Form.Control.Feedback type="invalid">
                 {errors.email}
               </Form.Control.Feedback>
             </Form.Group>
@@ -171,7 +184,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
                 isValid={touched.password && !errors.password}
                 isInvalid={errors.password}
               />
-              <Form.Control.Feedback type="invalid" tooltip>
+              <Form.Control.Feedback type="invalid">
                 {errors.password}
               </Form.Control.Feedback>
             </Form.Group>

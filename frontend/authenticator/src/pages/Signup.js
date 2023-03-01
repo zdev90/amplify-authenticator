@@ -3,8 +3,10 @@ import { Auth } from "aws-amplify";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
+import Alert from "react-bootstrap/Alert";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { FaCheck, FaTimes } from "react-icons/fa";
 
 import Navbar from "../components/Navbar";
 import VerificationForm from "../components/VerificationForm";
@@ -14,34 +16,42 @@ import "./Signup.css";
 
 const schema = Yup.object().shape({
   firstName: Yup.string()
-    .min(3, "First name is too short!")
-    .max(50, "First name is too long!")
-    .required("First name is required!"),
+    .min(3, "First name is too short")
+    .max(50, "First name is too long")
+    .required("First name is required"),
   lastName: Yup.string()
-    .min(3, "Last name is too short!")
-    .max(50, "Last name is too long!")
-    .required("Last name is required!"),
+    .min(3, "Last name is too short")
+    .max(50, "Last name is too long")
+    .required("Last name is required"),
   password: Yup.string()
-    .min(2, "Password is too short!")
-    .max(50, "Password is too long!")
-    .required("Password is required!"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match!")
-    .min(2, "Password confirmation is too short!")
-    .max(50, "Password confirmation is too long!")
-    .required("Password confirmation is required!"),
-  email: Yup.string().email("Email is invalid!").required("Email is required!"),
+    .min(12, "Password must contain at least 12 characters")
+    .matches(/\w*[a-z]\w*/, "Password must contain a lower case letter")
+    .matches(/\w*[A-Z]\w*/, "Password must contain an upper case letter")
+    .matches(/\d/, "Password must contain a number")
+    .matches(
+      /[!+@#$%^&*()\-_"=+{}; :,<.>]/,
+      "Password must contain a special character or a space"
+    )
+    .strict(true)
+    .trim("Password must not contain a leading or trailing space")
+    .required("Password is required"),
+  // confirmPassword: Yup.string()
+  //   .oneOf([Yup.ref("password"), null], "Passwords does not match")
+  //   .required("Confirm password is required"),
+  email: Yup.string().email("Email is invalid").required("Email is required"),
   confirmAge: Yup.bool()
     .required()
-    .oneOf([true], "You must be at least 18 years of age!"),
+    .oneOf([true], "Age confirmation is required"),
 });
 
 export default function Signup({ userHasAuthenticated }) {
   const [newUser, setNewUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   async function register(fields) {
     setIsLoading(true);
+    setError(null);
 
     try {
       // Sign up the user
@@ -51,6 +61,7 @@ export default function Signup({ userHasAuthenticated }) {
         attributes: {
           given_name: fields.firstName,
           family_name: fields.lastName,
+          "custom:age_confirmation": fields.confirmAge ? "true" : "false",
         },
         // autoSignIn: {
         //   enabled: true,
@@ -59,7 +70,8 @@ export default function Signup({ userHasAuthenticated }) {
       setIsLoading(false);
       setNewUser({ user, ...fields });
     } catch (e) {
-      alert(e);
+      console.error(e);
+      setError(e.message);
       setIsLoading(false);
     }
   }
@@ -73,12 +85,12 @@ export default function Signup({ userHasAuthenticated }) {
           lastName: "",
           email: "",
           password: "",
-          confirmPassword: "",
+          // confirmPassword: "",
           confirmAge: false,
         }}
         onSubmit={register}
         validationSchema={schema}
-        validateOnChange={false}
+        validateOnChange={true}
       >
         {({
           handleSubmit,
@@ -92,13 +104,24 @@ export default function Signup({ userHasAuthenticated }) {
           <Form noValidate onSubmit={handleSubmit} className="Signup-form">
             <div className="title">Create account</div>
 
+            {error && (
+              <Alert
+                variant="danger"
+                onClose={() => setError(null)}
+                dismissible
+                className="m-0"
+              >
+                {error}
+              </Alert>
+            )}
+
             <Form.Group
               controlId="firstName"
               size="lg"
               className="position-relative"
             >
               <Form.Label>
-                First Name <span>*</span>
+                First name <span>*</span>
               </Form.Label>
               <Form.Control
                 required
@@ -110,7 +133,7 @@ export default function Signup({ userHasAuthenticated }) {
                 isValid={touched.firstName && !errors.firstName}
                 isInvalid={errors.firstName}
               />
-              <Form.Control.Feedback type="invalid" tooltip>
+              <Form.Control.Feedback type="invalid">
                 {errors.firstName}
               </Form.Control.Feedback>
             </Form.Group>
@@ -121,7 +144,7 @@ export default function Signup({ userHasAuthenticated }) {
               className="position-relative"
             >
               <Form.Label>
-                Last Name <span>*</span>
+                Last name <span>*</span>
               </Form.Label>
               <Form.Control
                 required
@@ -132,7 +155,7 @@ export default function Signup({ userHasAuthenticated }) {
                 isValid={touched.lastName && !errors.lastName}
                 isInvalid={errors.lastName}
               />
-              <Form.Control.Feedback type="invalid" tooltip>
+              <Form.Control.Feedback type="invalid">
                 {errors.lastName}
               </Form.Control.Feedback>
             </Form.Group>
@@ -144,6 +167,7 @@ export default function Signup({ userHasAuthenticated }) {
             >
               <Form.Label>
                 Email <span>*</span>
+                <div>This will also be used as your username</div>
               </Form.Label>
               <Form.Control
                 required
@@ -154,7 +178,7 @@ export default function Signup({ userHasAuthenticated }) {
                 isValid={touched.email && !errors.email}
                 isInvalid={errors.email}
               />
-              <Form.Control.Feedback type="invalid" tooltip>
+              <Form.Control.Feedback type="invalid">
                 {errors.email}
               </Form.Control.Feedback>
             </Form.Group>
@@ -175,18 +199,120 @@ export default function Signup({ userHasAuthenticated }) {
                 isValid={touched.password && !errors.password}
                 isInvalid={errors.password}
               />
-              <Form.Control.Feedback type="invalid" tooltip>
+              {/* <Form.Control.Feedback type="invalid">
                 {errors.password}
+              </Form.Control.Feedback> */}
+              <Form.Control.Feedback
+                type={
+                  Yup.string()
+                    .matches(/\w*[a-z]\w*/)
+                    .isValidSync(values.password)
+                    ? "valid"
+                    : "invalid"
+                }
+              >
+                {Yup.string()
+                  .matches(/\w*[a-z]\w*/)
+                  .isValidSync(values.password) ? (
+                  <FaCheck />
+                ) : (
+                  <FaTimes />
+                )}
+                Password must contain a lower case letter
+              </Form.Control.Feedback>
+              <Form.Control.Feedback
+                type={
+                  Yup.string()
+                    .matches(/\w*[A-Z]\w*/)
+                    .isValidSync(values.password)
+                    ? "valid"
+                    : "invalid"
+                }
+              >
+                {Yup.string()
+                  .matches(/\w*[A-Z]\w*/)
+                  .isValidSync(values.password) ? (
+                  <FaCheck />
+                ) : (
+                  <FaTimes />
+                )}
+                Password must contain an upper case letter
+              </Form.Control.Feedback>
+              <Form.Control.Feedback
+                type={
+                  Yup.string().matches(/\d/).isValidSync(values.password)
+                    ? "valid"
+                    : "invalid"
+                }
+              >
+                {Yup.string().matches(/\d/).isValidSync(values.password) ? (
+                  <FaCheck />
+                ) : (
+                  <FaTimes />
+                )}
+                Password must contain a number
+              </Form.Control.Feedback>
+              <Form.Control.Feedback
+                type={
+                  Yup.string().min(12).isValidSync(values.password)
+                    ? "valid"
+                    : "invalid"
+                }
+              >
+                {Yup.string().min(12).isValidSync(values.password) ? (
+                  <FaCheck />
+                ) : (
+                  <FaTimes />
+                )}
+                Password must contain at least 12 characters
+              </Form.Control.Feedback>
+              <Form.Control.Feedback
+                type={
+                  Yup.string()
+                    .matches(/[!+@#$%^&*()\-_"=+{}; :,<.>]/)
+                    .isValidSync(values.password)
+                    ? "valid"
+                    : "invalid"
+                }
+              >
+                {Yup.string()
+                  .matches(/[!+@#$%^&*()\-_"=+{}; :,<.>]/)
+                  .isValidSync(values.password) ? (
+                  <FaCheck />
+                ) : (
+                  <FaTimes />
+                )}
+                Password must contain a special character or a space
+              </Form.Control.Feedback>
+              <Form.Control.Feedback
+                type={
+                  Yup.string()
+                    .strict(true)
+                    .trim()
+                    .isValidSync(values.password) && values.password.length
+                    ? "valid"
+                    : "invalid"
+                }
+              >
+                {Yup.string()
+                  .strict(true)
+                  .trim()
+                  .isValidSync(values.password) && values.password.length ? (
+                  <FaCheck />
+                ) : (
+                  <FaTimes />
+                )}
+                Password must not contain a leading or trailing space
               </Form.Control.Feedback>
             </Form.Group>
 
-            <Form.Group
+            {/* <Form.Group
               controlId="confirmPassword"
               size="lg"
               className="position-relative"
             >
               <Form.Label>
-                Confirm Password <span>*</span>
+                Confirm password <span>*</span>
               </Form.Label>
               <PasswordInput
                 required
@@ -196,10 +322,10 @@ export default function Signup({ userHasAuthenticated }) {
                 isValid={touched.confirmPassword && !errors.confirmPassword}
                 isInvalid={errors.confirmPassword}
               />
-              <Form.Control.Feedback type="invalid" tooltip>
+              <Form.Control.Feedback type="invalid">
                 {errors.confirmPassword}
               </Form.Control.Feedback>
-            </Form.Group>
+            </Form.Group> */}
 
             <Form.Group controlId="confirmAge" size="lg">
               <Form.Check
@@ -210,7 +336,6 @@ export default function Signup({ userHasAuthenticated }) {
                 isInvalid={!!errors.confirmAge}
                 feedback={errors.confirmAge}
                 feedbackType="invalid"
-                feedbackTooltip
               />
             </Form.Group>
 

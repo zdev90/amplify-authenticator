@@ -3,6 +3,7 @@ import { Auth } from "aws-amplify";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
+import Alert from "react-bootstrap/Alert";
 import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -14,20 +15,26 @@ import Footer from "../components/Footer";
 import "./Login.css";
 
 const schema = Yup.object().shape({
-  email: Yup.string().email("Email is invalid!").required("Email is required!"),
+  email: Yup.string().email("Email is invalid").required("Email is required"),
 });
 
 const resetSchema = Yup.object().shape({
-  confirmationCode: Yup.string().required("Verification code is required!"),
+  confirmationCode: Yup.string().required("Verification code is required"),
   password: Yup.string()
-    .min(2, "Password is too short!")
-    .max(50, "Password is too long!")
-    .required("Password is required!"),
+    .min(12, "Password must contain at least 12 characters")
+    .matches(/\w*[a-z]\w*/, "Password must contain a lower case letter")
+    .matches(/\w*[A-Z]\w*/, "Password must contain an upper case letter")
+    .matches(/\d/, "Password must contain a number")
+    .matches(
+      /[!+@#$%^&*()\-_"=+{}; :,<.>]/,
+      "Password must contain a special character or a space"
+    )
+    .strict(true)
+    .trim("Password must not contain a leading or trailing space")
+    .required("Password is required"),
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match!")
-    .min(2, "Password confirmation is too short!")
-    .max(50, "Password confirmation is too long!")
-    .required("Password confirmation is required!"),
+    .oneOf([Yup.ref("password"), null], "Passwords does not match")
+    .required("Confirm password is required"),
 });
 
 export default function Reset({ userHasAuthenticated, isAuthenticated }) {
@@ -35,16 +42,19 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
   const [isLoading, setIsLoading] = useState(false);
   const [stage, setStage] = useState("forgot");
   const [email, setEmail] = useState(null);
+  const [error, setError] = useState(null);
 
   async function sendCode(fields) {
     setIsLoading(true);
+    setError(null);
 
     try {
       await Auth.forgotPassword(fields.email);
       setEmail(fields.email);
       setStage("reset");
     } catch (e) {
-      alert(e);
+      console.error(e);
+      setError(e.message);
     }
 
     setIsLoading(false);
@@ -52,6 +62,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
 
   async function resetPassword(fields) {
     setIsLoading(true);
+    setError(null);
 
     try {
       await Auth.forgotPasswordSubmit(
@@ -61,7 +72,8 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
       );
       setStage("completed");
     } catch (e) {
-      alert(e);
+      console.error(e);
+      setError(e.message);
     }
 
     setIsLoading(false);
@@ -91,6 +103,17 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
           <Form noValidate onSubmit={handleSubmit}>
             <div className="title">Forgot your password?</div>
 
+            {error && (
+              <Alert
+                variant="danger"
+                onClose={() => setError(null)}
+                dismissible
+                className="m-0"
+              >
+                {error}
+              </Alert>
+            )}
+
             <Form.Text className="Login-text mt-2 mb-0">
               Enter your Email below and we will send a message to reset your
               password.
@@ -115,7 +138,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
                 isValid={touched.email && !errors.email}
                 isInvalid={errors.email}
               />
-              <Form.Control.Feedback type="invalid" tooltip>
+              <Form.Control.Feedback type="invalid">
                 {errors.email}
               </Form.Control.Feedback>
             </Form.Group>
@@ -186,7 +209,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
               className="position-relative"
             >
               <Form.Label>
-                verification code <span>*</span>
+                Verification code <span>*</span>
               </Form.Label>
               <Form.Control
                 autoFocus
@@ -197,7 +220,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
                 isValid={touched.confirmationCode && !errors.confirmationCode}
                 isInvalid={errors.confirmationCode}
               />
-              <Form.Control.Feedback type="invalid" tooltip>
+              <Form.Control.Feedback type="invalid">
                 {errors.confirmationCode}
               </Form.Control.Feedback>
             </Form.Group>
@@ -218,7 +241,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
                 isValid={touched.password && !errors.password}
                 isInvalid={errors.password}
               />
-              <Form.Control.Feedback type="invalid" tooltip>
+              <Form.Control.Feedback type="invalid">
                 {errors.password}
               </Form.Control.Feedback>
             </Form.Group>
@@ -229,7 +252,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
               className="position-relative"
             >
               <Form.Label>
-                Confirm Password <span>*</span>
+                Confirm password <span>*</span>
               </Form.Label>
               <PasswordInput
                 required
@@ -239,7 +262,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
                 isValid={touched.confirmPassword && !errors.confirmPassword}
                 isInvalid={errors.confirmPassword}
               />
-              <Form.Control.Feedback type="invalid" tooltip>
+              <Form.Control.Feedback type="invalid">
                 {errors.confirmPassword}
               </Form.Control.Feedback>
             </Form.Group>
