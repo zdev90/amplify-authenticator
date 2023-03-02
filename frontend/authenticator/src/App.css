@@ -244,6 +244,9 @@ form .btn-outline-primary:active {
   border: solid 2px #16191f !important;
   background-color: #fff !important;
 }
+form .btn-outline-primary:disabled {
+  color: #16191f !important;
+}
 
 form .btn-link {
   height: 48px;

@@ -61,7 +61,7 @@ export default function Signup({ userHasAuthenticated }) {
         attributes: {
           given_name: fields.firstName,
           family_name: fields.lastName,
-          "custom:age_confirmation": fields.confirmAge ? "true" : "false",
+          "custom:ageConfirmation": fields.confirmAge ? "true" : "false",
         },
         // autoSignIn: {
         //   enabled: true,

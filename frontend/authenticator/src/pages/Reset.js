@@ -89,7 +89,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
         }}
         onSubmit={sendCode}
         validationSchema={schema}
-        validateOnChange={false}
+        validateOnChange={true}
       >
         {({
           handleSubmit,
@@ -184,7 +184,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
         }}
         onSubmit={resetPassword}
         validationSchema={resetSchema}
-        validateOnChange={false}
+        validateOnChange={true}
       >
         {({
           handleSubmit,
