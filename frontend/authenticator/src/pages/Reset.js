@@ -115,7 +115,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
             )}
 
             <Form.Text className="Login-text mt-2 mb-0">
-              Enter your Email below and we will send a message to reset your
+              Enter your email below and we will send a message to reset your
               password.
             </Form.Text>
 

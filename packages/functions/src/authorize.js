@@ -2,7 +2,6 @@ import AWS from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
 import jwt_decode from "jwt-decode";
 import * as AmazonCognitoIdentity from "amazon-cognito-identity-js";
-import { Config } from "sst/node/config";
 
 import { encryptToken, urlSafeDecode } from "../../utils/encrypt";
 import { verifyClient } from "../../utils/cognitoServiceProvider";
@@ -75,15 +74,31 @@ function insertStateIfAny(event) {
   return stateQueryString;
 }
 
+// Confirm that auth type is login or register.
 function parseAction(event) {
-  const state = event.queryStringParameters.state;
-  const states = state.split("-");
-  if (states[1]) {
-    const action = urlSafeDecode(states[1]);
-    if (action === "register") {
+  // Check auth_type parameter first
+  var auth_type = event.queryStringParameters.auth_type;
+  if (auth_type !== undefined) {
+    auth_type = auth_type.toLowerCase();
+    if (auth_type === "login" || auth_type === "signin") {
+      return "login";
+    } else if (auth_type === "register" || auth_type === "signup") {
       return "register";
     }
   }
+
+  // Check state
+  const state = event.queryStringParameters.state;
+  if (state !== undefined) {
+    const states = state.split("-");
+    if (states[1]) {
+      const action = urlSafeDecode(states[1]);
+      if (action && action.toLowerCase() === "register") {
+        return "register";
+      }
+    }
+  }
+
   return "login";
 }
 
@@ -99,6 +114,7 @@ export const handler = async (event, context) => {
   var redirect_uri = event.queryStringParameters.redirect_uri;
   var code_challenge = event.queryStringParameters.code_challenge;
   var code_challenge_method = event.queryStringParameters.code_challenge_method;
+  var portal_url = event.queryStringParameters.portal_url;
   if (
     client_id === undefined ||
     redirect_uri === undefined ||
@@ -241,7 +257,7 @@ export const handler = async (event, context) => {
       statusCode: 302,
       headers: {
         Location:
-          Config.PORTAL_URL +
+          (process.env.PORTAL_URL || portal_url || "http://localhost:3000") +
           "/" +
           parseAction(event) +
           "?client_id=" +

@@ -1,10 +1,9 @@
-import { Config } from "sst/node/config";
-
 import { verifyClient } from "../../utils/cognitoServiceProvider";
 
 export const handler = async (event, context) => {
   var client_id = event.queryStringParameters.client_id;
   var logout_uri = event.queryStringParameters.logout_uri;
+  var portal_url = event.queryStringParameters.portal_url;
 
   if (client_id === undefined || logout_uri === undefined) {
     return {
@@ -26,7 +25,7 @@ export const handler = async (event, context) => {
     statusCode: 302,
     headers: {
       Location:
-        Config.PORTAL_URL +
+        (process.env.PORTAL_URL || portal_url || "http://localhost:3000") +
         "/logout?client_id=" +
         client_id +
         "&logout_uri=" +

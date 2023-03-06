@@ -22,10 +22,10 @@ export function PortalStack({ stack, app }) {
 
   const portalUrl = portal.url || "http://localhost:3000";
 
-  const PORTAL_URL = new Config.Parameter(stack, "PORTAL_URL", {
-    value: portalUrl,
-  });
-  api.bind([PORTAL_URL]);
+  // const PORTAL_URL = new Config.Parameter(stack, "PORTAL_URL", {
+  //   value: portalUrl,
+  // });
+  // api.bind([PORTAL_URL]);
 
   // Client frontend app
   const clientPortal = new StaticSite(stack, "AuthenticatorClientPortal", {
