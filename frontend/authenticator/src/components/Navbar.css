@@ -37,8 +37,10 @@
     line-height: 1.35;
     letter-spacing: normal;
     text-align: center;
-    color: #00007b !important;
+    color: #fff !important;
     border-bottom: 2px solid rgba(0, 0, 0, 0);
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   }
 
   .Nav .Nav-login:hover,
@@ -49,12 +51,8 @@
     border-right-style: none;
     border-bottom-style: solid;
     border-bottom-width: 2px;
-    border-image-source: linear-gradient(
-      to right,
-      #2cd266 0%,
-      #48afe5 49%,
-      #e50086 100%
-    );
+    color: #fff !important;
+    border-bottom-color: #fff;
     border-image-slice: 1;
   }
 }

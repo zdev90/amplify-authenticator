@@ -132,7 +132,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
           errors,
         }) => (
           <Form noValidate onSubmit={handleSubmit}>
-            <div className="title">Login</div>
+            <div className="title">AWS Events login</div>
 
             {error && (
               <Alert
@@ -151,7 +151,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
               className="position-relative"
             >
               <Form.Label>
-                Email <span>*</span>
+                Business email <span>*</span>
               </Form.Label>
               <Form.Control
                 required
@@ -162,6 +162,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
                 disabled={isLoading}
                 isValid={touched.email && !errors.email}
                 isInvalid={errors.email}
+                placeholder="Enter email"
               />
               <Form.Control.Feedback type="invalid">
                 {errors.email}
@@ -183,6 +184,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
                 disabled={isLoading}
                 isValid={touched.password && !errors.password}
                 isInvalid={errors.password}
+                placeholder="Enter password"
               />
               <Form.Control.Feedback type="invalid">
                 {errors.password}
@@ -191,15 +193,15 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
 
             <Form.Text className="Login-text">
               By logging in, you agree to the{" "}
-              <a href="https://aws.amazon.com/events/terms/" target="_blank">
+              <a href="https://aws.amazon.com/events/terms/" target="_blank" rel="noreferrer">
                 AWS Event Terms & Conditions
               </a>
               ,{" "}
-              <a href="https://aws.amazon.com/codeofconduct/" target="_blank">
+              <a href="https://aws.amazon.com/codeofconduct/" target="_blank" rel="noreferrer">
                 AWS Code of Conduct
               </a>
               , and the{" "}
-              <a href="https://aws.amazon.com/privacy/" target="_blank">
+              <a href="https://aws.amazon.com/privacy/" target="_blank" rel="noreferrer">
                 AWS Privacy Notice
               </a>
               .
@@ -212,7 +214,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
               disabled={isLoading}
               variant="primary"
             >
-              Login
+              Log in
             </Button>
 
             <Button

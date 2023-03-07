@@ -7,33 +7,21 @@ export default function Footer() {
     <div className="Footer">
       <Nav defaultActiveKey="/home" as="ul">
         <Nav.Item as="li">
+          <Nav.Link href="https://aws.amazon.com/privacy/">Privacy</Nav.Link>
+        </Nav.Item>
+        <Nav.Item as="li">
+          <Nav.Link href="https://aws.amazon.com/terms/">Site terms</Nav.Link>
+        </Nav.Item>
+        <Nav.Item as="li">
           <Nav.Link href="https://aws.amazon.com/legal/cookies/">
-            Cookie Preferences
+            Cookie preferences
           </Nav.Link>
         </Nav.Item>
         <Nav.Item as="li">
-          <Nav.Link href="https://aws.amazon.com/privacy/">
-            Privacy Policy
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item as="li">
-          <Nav.Link href="https://aws.amazon.com/terms/">Site Terms</Nav.Link>
-        </Nav.Item>
-        <Nav.Item as="li">
-          <Nav.Link href="https://aws.amazon.com/service-terms/">
-            Terms & Conditions
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item as="li">
-          <Nav.Link href="https://aws.amazon.com/codeofconduct/">
-            Code of Conduct
-          </Nav.Link>
+          © 2023, Amazon Web Services, Inc. or its affiliates. All rights
+          reserved.
         </Nav.Item>
       </Nav>
-
-      <div className="Copyright">
-        © 2023, Amazon re:Inforce or its affiliates. All rights reserved
-      </div>
     </div>
   );
 }

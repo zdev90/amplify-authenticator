@@ -5,7 +5,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-    margin: 199px 0 0 3px;
+    /* margin: 199px 0 0 3px; */
     padding: 18px 0;
     border-top-style: solid;
     border-top-width: 2px;
@@ -16,10 +16,31 @@
       #e50086 100%
     );
     border-image-slice: 1;
+    font-family: AmazonEmberDisplay;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 18px;
+    letter-spacing: normal;
+    text-align: left;
+    color: #fff;
+  }
+
+  .Footer .nav .nav-item:not(:last-child) {
+    border-right: 1px solid #fff;
+  }
+
+  .Footer .nav .nav-item {
+    padding: 0 12px;
+  }
+
+  .Footer .nav .nav-item:first-child {
+    padding-left: 0;
   }
 
   .Footer .nav .nav-item .nav-link {
-    height: 21px;
+    height: 18px;
     flex-grow: 0;
     padding: 0.5px 0;
     font-family: AmazonEmberDisplay;
@@ -27,30 +48,14 @@
     font-weight: normal;
     font-stretch: normal;
     font-style: normal;
-    line-height: 1.5;
+    line-height: 18px;
     letter-spacing: normal;
     text-align: left;
-    color: #c3cbce;
-    margin-right: 19px;
+    color: #fff;
   }
 
   .Footer .nav .nav-item .nav-link:hover {
     text-decoration: underline;
-  }
-
-  .Footer .Copyright {
-    height: 21px;
-    flex-grow: 0;
-    padding: 0.5px 0;
-    font-family: AmazonEmberDisplay;
-    font-size: 14px;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.5;
-    letter-spacing: normal;
-    text-align: left;
-    color: #c3cbce;
   }
 }
 

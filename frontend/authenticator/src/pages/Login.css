@@ -1,10 +1,10 @@
 @media all {
   .Login {
-    background-image: url("/src/assets/img/login/frame-313315.png");
-    background: -webkit-image-set(
+    background-image: url("/src/assets/img/login/BG asset-Large –– 1170x658_v2.jpg");
+    /* background: -webkit-image-set(
       url("/src/assets/img/login/frame-313315@2x.png") 2x,
       url("/src/assets/img/login/frame-313315@3x.png") 3x
-    );
+    ); */
     background-color: var(--neutral-black);
     min-height: 100vh;
     background-position: center;
@@ -15,7 +15,7 @@
   }
 
   .Login form {
-    margin: 110px auto 0 auto;
+    margin: 110px auto 110px auto;
     max-width: 554px;
     background-color: #fff;
     padding: 32px 32px 50px;
@@ -44,5 +44,9 @@
 
   .Login form a:hover {
     color: #545b64 !important;
+  }
+
+  .Reset-password form {
+    margin: 160px auto 160px auto
   }
 }

@@ -192,7 +192,7 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
             disabled={isLoading}
             className="mt-5"
           >
-            Verify Account
+            Verify account
           </Button>
 
           <Button

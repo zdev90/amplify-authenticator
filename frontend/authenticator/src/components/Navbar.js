@@ -3,10 +3,8 @@ import BootstrapNavbar from "react-bootstrap/Navbar";
 import { LinkContainer } from "react-router-bootstrap";
 import { useLocation } from "react-router-dom";
 
-import logoImg from "../assets/img/logo/logo.png";
-import blackLogoImg from "../assets/img/logo/logo-black.svg";
-import AWS_logo_RGB from "../assets/img/logo/AWS_logo_RGB.svg";
-import AWS_logo_RGB_REV from "../assets/img/logo/AWS_logo_RGB_REV.svg";
+import AWS_logo_RGB_BLK from "../assets/img/logo/AWS_logo_RGB_BLK.svg";
+import AWS_logo_RGB_WHT from "../assets/img/logo/AWS_logo_RGB_WHT.svg";
 import "./Navbar.css";
 
 export default function Navbar({ variant = "light" }) {
@@ -16,8 +14,9 @@ export default function Navbar({ variant = "light" }) {
     <BootstrapNavbar className="Navbar">
       <BootstrapNavbar.Brand>
         <img
-          src={variant === "light" ? AWS_logo_RGB_REV : AWS_logo_RGB}
+          src={variant === "light" ? AWS_logo_RGB_WHT : AWS_logo_RGB_BLK}
           height="36"
+          alt="AWS logo"
         />
       </BootstrapNavbar.Brand>
       <BootstrapNavbar.Toggle />

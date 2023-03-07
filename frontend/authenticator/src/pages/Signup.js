@@ -11,6 +11,7 @@ import { FaCheck, FaTimes } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import VerificationForm from "../components/VerificationForm";
 import PasswordInput from "../components/PasswordInput";
+import Footer from "../components/Footer";
 
 import "./Signup.css";
 
@@ -166,7 +167,7 @@ export default function Signup({ userHasAuthenticated }) {
               className="position-relative"
             >
               <Form.Label>
-                Email <span>*</span>
+                Business email <span>*</span>
                 <div>This will also be used as your username</div>
               </Form.Label>
               <Form.Control
@@ -331,7 +332,7 @@ export default function Signup({ userHasAuthenticated }) {
               <Form.Check
                 required
                 name="confirmAge"
-                label="I confirm that I will be at least 18 years old on the first day of the event"
+                label="I confirm that I will be at least 18 years old by the first day of the first event I register for."
                 onChange={handleChange}
                 isInvalid={!!errors.confirmAge}
                 feedback={errors.confirmAge}
@@ -344,7 +345,11 @@ export default function Signup({ userHasAuthenticated }) {
               AWS takes reports of misconduct seriously and encourages event
               participants to report disruptive or otherwise unsafe behavior.
               Attendees who do not comply with the{" "}
-              <a href="https://aws.amazon.com/codeofconduct/" target="_blank">
+              <a
+                href="https://aws.amazon.com/codeofconduct/"
+                target="_blank"
+                rel="noreferrer"
+              >
                 AWS Code of Conduct
               </a>{" "}
               may be required to leave all event venues and will be banned from
@@ -352,15 +357,27 @@ export default function Signup({ userHasAuthenticated }) {
               <br />
               <br />
               By creating an account, you agree to the{" "}
-              <a href="https://aws.amazon.com/events/terms/" target="_blank">
+              <a
+                href="https://aws.amazon.com/events/terms/"
+                target="_blank"
+                rel="noreferrer"
+              >
                 AWS Event Terms & Conditions
               </a>{" "}
               and the{" "}
-              <a href="https://aws.amazon.com/codeofconduct/" target="_blank">
+              <a
+                href="https://aws.amazon.com/codeofconduct/"
+                target="_blank"
+                rel="noreferrer"
+              >
                 AWS Code of Conduct
               </a>
               . Your information will be handled in accordance with the{" "}
-              <a href="https://aws.amazon.com/privacy/" target="_blank">
+              <a
+                href="https://aws.amazon.com/privacy/"
+                target="_blank"
+                rel="noreferrer"
+              >
                 AWS Privacy Notice
               </a>
               .
@@ -372,6 +389,7 @@ export default function Signup({ userHasAuthenticated }) {
               type="submit"
               variant="primary"
               disabled={isLoading}
+              className="mt-4"
             >
               Create account
             </Button>
@@ -384,7 +402,8 @@ export default function Signup({ userHasAuthenticated }) {
   return (
     <div className="Signup">
       <Container>
-        <Navbar variant="dark" />
+        <Navbar />
+
         {newUser === null ? (
           renderRegisterForm()
         ) : (
@@ -393,6 +412,8 @@ export default function Signup({ userHasAuthenticated }) {
             user={newUser}
           />
         )}
+
+        <Footer />
       </Container>
     </div>
   );

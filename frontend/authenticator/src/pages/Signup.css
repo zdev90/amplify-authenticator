@@ -1,32 +1,22 @@
 @media all {
   .Signup {
-    background-color: #f7f7f5;
-    padding: 22px 0 60px 0;
+    background-image: url("/src/assets/img/login/BG asset-Large –– 1170x658_v2.jpg");
+    background-color: var(--neutral-black);
     min-height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    padding: 22px 0 0 0;
   }
 
   .Signup-form {
-    margin: 0 auto 60px auto;
+    margin: 60px auto 60px auto;
     gap: 48px;
     padding: 32px;
     border: solid 1px #dadada;
     background-color: #fff;
     max-width: 711px;
-  }
-
-  .Signup-form .btn {
-    margin-top: 48px;
-    background-color: #f90 !important;
-    color: #16191f !important;
-    border-color: #f90 !important;
-  }
-
-  .Signup-form .btn:hover,
-  .Signup-form .btn:focus,
-  .Signup-form .btn:active {
-    background-color: #ec7211 !important;
-    color: #16191f !important;
-    border-color: #ec7211 !important;
   }
 
   .Signup-form a {

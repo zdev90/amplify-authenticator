@@ -47,9 +47,9 @@
   font-stretch: normal;
 }
 
-.App nav {
+/* .App nav {
   margin-bottom: 60px;
-}
+} */
 
 .title {
   font-family: AmazonEmberDisplay;
@@ -180,9 +180,9 @@ form .btn-primary {
   align-items: center;
   gap: 12px;
   padding: 12px 32px;
-  border: solid 1px #232f3e !important;
-  border-radius: 0px;
-  background-color: #232f3e !important;
+  border: solid 1px #ff9900 !important;
+  border-radius: 24px;
+  background-color: #ff9900 !important;
   /* background-image: linear-gradient(
     to right,
     #9819ff 0%,
@@ -201,7 +201,7 @@ form .btn-primary {
   line-height: 22px;
   letter-spacing: 0.25px;
   text-align: center;
-  color: #fff !important;
+  color: #232f3e !important;
   /* transition: 0.5s; */
   /* background-size: 200% auto; */
 }
@@ -209,8 +209,8 @@ form .btn-primary {
 form .btn-primary:focus,
 form .btn-primary:hover {
   /* background-position: right center; */
-  border: solid 1px #545b64 !important;
-  background-color: #545b64 !important;
+  border: solid 1px #fcb750 !important;
+  background-color: #fcb750 !important;
 }
 
 form .btn-outline-primary {
@@ -223,8 +223,8 @@ form .btn-outline-primary {
   align-items: center;
   gap: 12px;
   padding: 12px 32px;
-  border: solid 2px #545b64;
-  border-radius: 0;
+  border: solid 2px #232f3e;
+  border-radius: 24px;
   background-color: #fff;
   font-family: AmazonEmberDisplay;
   font-size: 18px;
@@ -234,18 +234,18 @@ form .btn-outline-primary {
   line-height: 22px;
   letter-spacing: 0.25px;
   text-align: center;
-  color: #545b64;
+  color: #232f3e;
 }
 
 form .btn-outline-primary:hover,
 form .btn-outline-primary:focus,
 form .btn-outline-primary:active {
-  color: #16191f !important;
-  border: solid 2px #16191f !important;
+  color: #545b64 !important;
+  border: solid 2px #545b64 !important;
   background-color: #fff !important;
 }
 form .btn-outline-primary:disabled {
-  color: #16191f !important;
+  color: #545b64 !important;
 }
 
 form .btn-link {
@@ -253,7 +253,7 @@ form .btn-link {
   padding: 12px 32px;
   display: flex;
   /* color: #00007b; */
-  color: #545b64;
+  color: #232f3e;
   font-family: AmazonEmberDisplay;
   font-size: 18px;
   font-weight: 700;
@@ -272,14 +272,14 @@ form .btn-link:hover,
 form .btn-link:focus,
 form .btn-link:active {
   /* color: #00007b; */
-  color: #16191f;
+  color: #545b64;
   text-decoration: none;
   border-top-style: none;
   border-left-style: none;
   border-right-style: none;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #16191f;
+  border-bottom-color: #545b64;
   /* border-image-source: linear-gradient(
     to right,
     #2cd266 0%,

@@ -125,7 +125,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
               className="position-relative my-5"
             >
               <Form.Label>
-                Email <span>*</span>
+                Business email <span>*</span>
               </Form.Label>
               <Form.Control
                 required
@@ -328,7 +328,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
   }
 
   return (
-    <div className="Login">
+    <div className="Login Reset-password">
       <Container>
         <Navbar />
 
