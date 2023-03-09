@@ -30,7 +30,7 @@ const validationSchema = object({
     .matches(/(S256|SHA256)/i),
   state: string()
     .optional()
-    .matches(/^[a-zA-Z0-9-]*$/),
+    .matches(/^[a-zA-Z0-9-=._]*$/),
   auth_type: string()
     .optional()
     .matches(/(login|signin|register|signup)/i),
