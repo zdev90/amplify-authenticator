@@ -39,7 +39,7 @@ const queryParamSchema = Yup.object().shape({
     ),
   clientState: Yup.string()
     .optional()
-    .matches(/^[a-zA-Z0-9-]*$/),
+    .matches(/^[a-zA-Z0-9-=._]*$/),
 });
 
 export default function Login({ userHasAuthenticated, isAuthenticated }) {
