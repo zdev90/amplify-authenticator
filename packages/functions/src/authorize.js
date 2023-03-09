@@ -2,14 +2,39 @@ import AWS from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
 import jwt_decode from "jwt-decode";
 import * as AmazonCognitoIdentity from "amazon-cognito-identity-js";
+import { object, string } from "yup";
 
 import { encryptToken, urlSafeDecode } from "../../utils/encrypt";
 import { verifyClient } from "../../utils/cognitoServiceProvider";
+import { getConfigFromS3 } from "../../utils/config";
 
 const CODE_LIFE = 600000; // How long in milliseconds the authorization code can be used to retrieve the tokens from the table (10 minutes)
 const RECORD_LIFE = 900000; // How long in milliseconds the record lasts in the dynamoDB table (15 minutes)
 
 var docClient = new AWS.DynamoDB.DocumentClient();
+
+const validationSchema = object({
+  client_id: string()
+    .required()
+    .matches(/^[a-zA-Z0-9]*$/),
+  redirect_uri: string()
+    .required()
+    .matches(
+      /^((?:http:\/\/)|(?:https:\/\/))(www.)?((?:[a-zA-Z0-9]+\.[a-z]{3})|(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?::\d+)?)|(localhost(?::\d+)?))([\/a-zA-Z0-9\.]*)$/
+    ),
+  code_challenge: string()
+    .required()
+    .matches(/^[a-zA-Z0-9_-]*$/),
+  code_challenge_method: string()
+    .required()
+    .matches(/(S256|SHA256)/i),
+  state: string()
+    .optional()
+    .matches(/^[a-zA-Z0-9-]*$/),
+  auth_type: string()
+    .optional()
+    .matches(/(login|signin|register|signup)/i),
+});
 
 async function getCookiesFromHeader(headers) {
   if (
@@ -110,22 +135,26 @@ export const handler = async (event, context) => {
     };
   }
 
+  if (!validationSchema.isValidSync(event.queryStringParameters)) {
+    // Log validation errors
+    try {
+      validationSchema.validateSync(event.queryStringParameters);
+    } catch (error) {
+      console.error(error);
+    }
+
+    return {
+      statusCode: 400,
+      body: JSON.stringify(
+        "Required parameters are missing or have invalid format"
+      ),
+    };
+  }
+
   var client_id = event.queryStringParameters.client_id;
   var redirect_uri = event.queryStringParameters.redirect_uri;
   var code_challenge = event.queryStringParameters.code_challenge;
   var code_challenge_method = event.queryStringParameters.code_challenge_method;
-  var portal_url = event.queryStringParameters.portal_url;
-  if (
-    client_id === undefined ||
-    redirect_uri === undefined ||
-    code_challenge === undefined ||
-    code_challenge_method === undefined
-  ) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify("Required parameters are missing"),
-    };
-  }
 
   // Verify client and redirect_uri against clients table
   var validClient = await verifyClient(client_id, redirect_uri);
@@ -136,6 +165,7 @@ export const handler = async (event, context) => {
     };
   }
 
+  const { PORTAL_URL } = await getConfigFromS3();
   const authorizationCode = uuidv4();
   const currentTime = Date.now();
   const codeExpiry = currentTime + CODE_LIFE;
@@ -144,9 +174,10 @@ export const handler = async (event, context) => {
     TableName: process.env.CODES_TABLE_NAME,
     Item: {
       authorization_code: authorizationCode,
-      code_challenge: code_challenge,
-      client_id: client_id,
-      redirect_uri: redirect_uri,
+      code_challenge,
+      code_challenge_method,
+      client_id,
+      redirect_uri,
       code_expiry: codeExpiry,
       record_expiry: recordExpiry,
     },
@@ -257,7 +288,7 @@ export const handler = async (event, context) => {
       statusCode: 302,
       headers: {
         Location:
-          (process.env.PORTAL_URL || portal_url || "http://localhost:3000") +
+          PORTAL_URL +
           "/" +
           parseAction(event) +
           "?client_id=" +

@@ -1,10 +1,42 @@
 import AWS from "aws-sdk";
 import qs from "querystring";
+import { object, string } from "yup";
+
 import { decryptToken, base64URLEncode, sha256 } from "../../utils/encrypt";
 
 import { cognitoSP } from "../../utils/cognitoServiceProvider";
 
 var docClient = new AWS.DynamoDB.DocumentClient();
+
+const validationSchema = object({
+  client_id: string()
+    .required()
+    .matches(/^[a-zA-Z0-9]*$/),
+  grant_type: string()
+    .required()
+    .matches(/(authorization_code|refresh_token)/),
+  code: string().when("grant_type", {
+    is: "authorization_code",
+    then: (schema) => schema.required().matches(/^[a-zA-Z0-9-]*$/),
+  }),
+  redirect_uri: string().when("grant_type", {
+    is: "authorization_code",
+    then: (schema) =>
+      schema
+        .required()
+        .matches(
+          /^((?:http:\/\/)|(?:https:\/\/))(www.)?((?:[a-zA-Z0-9]+\.[a-z]{3})|(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?::\d+)?)|(localhost(?::\d+)?))([\/a-zA-Z0-9\.]*)$/
+        ),
+  }),
+  code_verifier: string().when("grant_type", {
+    is: "authorization_code",
+    then: (schema) => schema.required().matches(/^[a-zA-Z0-9]*$/),
+  }),
+  refresh_token: string().when("grant_type", {
+    is: "refresh_token",
+    then: (schema) => schema.required().matches(/^[a-zA-Z0-9_.-]*$/),
+  }),
+});
 
 export const handler = async (event, context) => {
   if (!(event && event.body)) {
@@ -15,17 +47,27 @@ export const handler = async (event, context) => {
   }
 
   var buff = Buffer.from(event.body, "base64");
-  var eventBodyStr = buff.toString('UTF-8');
+  var eventBodyStr = buff.toString("UTF-8");
   var jsonBody = qs.parse(eventBodyStr);
-  var grant_type = jsonBody.grant_type;
-  var client_id = jsonBody.client_id;
 
-  if (client_id === undefined) {
+  if (!validationSchema.isValidSync(jsonBody)) {
+    // Log validation errors
+    try {
+      validationSchema.validateSync(jsonBody);
+    } catch (error) {
+      console.error(error);
+    }
+
     return {
       statusCode: 400,
-      body: JSON.stringify("client_id is missing"),
+      body: JSON.stringify(
+        "Required parameters are missing or have invalid format"
+      ),
     };
   }
+
+  var grant_type = jsonBody.grant_type;
+  var client_id = jsonBody.client_id;
 
   if (grant_type === "authorization_code") {
     var authorization_code = jsonBody.code;

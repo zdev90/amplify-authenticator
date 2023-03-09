@@ -1,10 +1,12 @@
 import { Api, use } from "sst/constructs";
 import { AuthStack } from "./AuthStack";
 import { CodesStack } from "./CodesStack";
+import ConfigStack from "./ConfigStack";
 
 export function ApiStack({ stack, app }) {
   const { auth } = use(AuthStack);
   const { codesTable, encryptionKey } = use(CodesStack);
+  const { configBucket, configObjectKey } = use(ConfigStack);
 
   // Create an HTTP API
   const api = new Api(stack, "Api", {
@@ -18,6 +20,8 @@ export function ApiStack({ stack, app }) {
           USER_POOL_CLIENT_ID: auth.userPoolClientId,
           CODES_TABLE_NAME: codesTable.tableName,
           ENCRYPTION_KEY_ID: encryptionKey.keyId,
+          CONFIG_BUCKET_NAME: configBucket.bucketName,
+          CONFIG_OBJECT_KEY: configObjectKey,
         },
       },
     },
@@ -29,7 +33,7 @@ export function ApiStack({ stack, app }) {
     },
   });
 
-  api.attachPermissions(["cognito-idp", codesTable, "kms:*"]);
+  api.attachPermissions(["cognito-idp", codesTable, "kms:*", configBucket]);
 
   // Show the endpoint in the output
   stack.addOutputs({

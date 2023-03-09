@@ -28,6 +28,20 @@ const schema = Yup.object().shape({
   email: Yup.string().email("Email is invalid").required("Email is required"),
 });
 
+const queryParamSchema = Yup.object().shape({
+  authCode: Yup.string()
+    .required()
+    .matches(/^[a-zA-Z0-9-]*$/),
+  redirectUri: Yup.string()
+    .required()
+    .matches(
+      /^((?:http:\/\/)|(?:https:\/\/))(www.)?((?:[a-zA-Z0-9]+\.[a-z]{3})|(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?::\d+)?)|(localhost(?::\d+)?))([\/a-zA-Z0-9\.]*)$/
+    ),
+  clientState: Yup.string()
+    .optional()
+    .matches(/^[a-zA-Z0-9-]*$/),
+});
+
 export default function Login({ userHasAuthenticated, isAuthenticated }) {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +84,10 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
       let redirectUri = queryStringParams.get("redirect_uri");
       let authCode = queryStringParams.get("authorization_code");
       let clientState = queryStringParams.get("state");
-      if (authCode && redirectUri) {
+
+      if (
+        queryParamSchema.isValidSync({ redirectUri, authCode, clientState })
+      ) {
         const response = await storeTokens(
           authCode,
           idToken,
@@ -91,10 +108,8 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
           );
         }
       } else {
-        /*
-         * Sign in directly to broker (not from redirect from client as part of oauth2 flow)
-         */
-        history.push("/");
+        throw new Error("Invalid url parameters.");
+        // history.push("/");
       }
 
       setIsLoading(false);
@@ -193,15 +208,27 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
 
             <Form.Text className="Login-text">
               By logging in, you agree to the{" "}
-              <a href="https://aws.amazon.com/events/terms/" target="_blank" rel="noreferrer">
+              <a
+                href="https://aws.amazon.com/events/terms/"
+                target="_blank"
+                rel="noreferrer"
+              >
                 AWS Event Terms & Conditions
               </a>
               ,{" "}
-              <a href="https://aws.amazon.com/codeofconduct/" target="_blank" rel="noreferrer">
+              <a
+                href="https://aws.amazon.com/codeofconduct/"
+                target="_blank"
+                rel="noreferrer"
+              >
                 AWS Code of Conduct
               </a>
               , and the{" "}
-              <a href="https://aws.amazon.com/privacy/" target="_blank" rel="noreferrer">
+              <a
+                href="https://aws.amazon.com/privacy/"
+                target="_blank"
+                rel="noreferrer"
+              >
                 AWS Privacy Notice
               </a>
               .

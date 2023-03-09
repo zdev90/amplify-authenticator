@@ -19,6 +19,20 @@ const confirmSchema = Yup.object().shape({
   confirmationCode: Yup.string().required("Verification code is required"),
 });
 
+const queryParamSchema = Yup.object().shape({
+  authCode: Yup.string()
+    .required()
+    .matches(/^[a-zA-Z0-9-]*$/),
+  redirectUri: Yup.string()
+    .required()
+    .matches(
+      /^((?:http:\/\/)|(?:https:\/\/))(www.)?((?:[a-zA-Z0-9]+\.[a-z]{3})|(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?::\d+)?)|(localhost(?::\d+)?))([\/a-zA-Z0-9\.]*)$/
+    ),
+  clientState: Yup.string()
+    .optional()
+    .matches(/^[a-zA-Z0-9-]*$/),
+});
+
 export default function VerificationForm({ userHasAuthenticated, user }) {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
@@ -78,7 +92,10 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
       let redirectUri = queryStringParams.get("redirect_uri");
       let authCode = queryStringParams.get("authorization_code");
       let clientState = queryStringParams.get("state");
-      if (authCode && redirectUri) {
+
+      if (
+        queryParamSchema.isValidSync({ redirectUri, authCode, clientState })
+      ) {
         const response = await storeTokens(
           authCode,
           idToken,
@@ -99,10 +116,8 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
           );
         }
       } else {
-        /*
-         * Sign in directly to broker (not from redirect from client as part of oauth2 flow)
-         */
-        history.push("/");
+        throw new Error("Invalid url parameters.");
+        // history.push("/");
       }
 
       setIsLoading(false);
