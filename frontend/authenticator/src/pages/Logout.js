@@ -7,7 +7,7 @@ import { eraseCookie } from "../lib/cookieHelper";
 const urlSchema = Yup.string()
   .required()
   .matches(
-    /^((?:http:\/\/)|(?:https:\/\/))(www.)?((?:[a-zA-Z0-9]+\.[a-z]{3})|(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?::\d+)?)|(localhost(?::\d+)?))([\/a-zA-Z0-9\.]*)$/
+    /^((?:http:\/\/)|(?:https:\/\/))(www.)?((?:[a-zA-Z0-9_-]+\.[a-z]{3})|(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?::\d+)?)|(localhost(?::\d+)?))([\/a-zA-Z0-9\.]*)$/
   );
 
 export default function Logout({ userHasAuthenticated }) {

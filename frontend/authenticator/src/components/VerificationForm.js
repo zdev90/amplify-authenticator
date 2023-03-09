@@ -26,11 +26,11 @@ const queryParamSchema = Yup.object().shape({
   redirectUri: Yup.string()
     .required()
     .matches(
-      /^((?:http:\/\/)|(?:https:\/\/))(www.)?((?:[a-zA-Z0-9]+\.[a-z]{3})|(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?::\d+)?)|(localhost(?::\d+)?))([\/a-zA-Z0-9\.]*)$/
+      /^((?:http:\/\/)|(?:https:\/\/))(www.)?((?:[a-zA-Z0-9_-]+\.[a-z]{3})|(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?::\d+)?)|(localhost(?::\d+)?))([\/a-zA-Z0-9\.]*)$/
     ),
   clientState: Yup.string()
     .optional()
-    .matches(/^[a-zA-Z0-9-]*$/),
+    .matches(/^[a-zA-Z0-9._=-]*$/),
 });
 
 export default function VerificationForm({ userHasAuthenticated, user }) {
