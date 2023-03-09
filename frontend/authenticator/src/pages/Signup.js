@@ -121,9 +121,7 @@ export default function Signup({ userHasAuthenticated }) {
               size="lg"
               className="position-relative"
             >
-              <Form.Label>
-                First name <span>*</span>
-              </Form.Label>
+              <Form.Label>First name</Form.Label>
               <Form.Control
                 required
                 autoFocus
@@ -144,9 +142,7 @@ export default function Signup({ userHasAuthenticated }) {
               size="lg"
               className="position-relative"
             >
-              <Form.Label>
-                Last name <span>*</span>
-              </Form.Label>
+              <Form.Label>Last name</Form.Label>
               <Form.Control
                 required
                 type="text"
@@ -167,7 +163,7 @@ export default function Signup({ userHasAuthenticated }) {
               className="position-relative"
             >
               <Form.Label>
-                Business email <span>*</span>
+                Business email
                 <div>This will also be used as your username</div>
               </Form.Label>
               <Form.Control
@@ -189,9 +185,7 @@ export default function Signup({ userHasAuthenticated }) {
               size="lg"
               className="position-relative"
             >
-              <Form.Label>
-                Password <span>*</span>
-              </Form.Label>
+              <Form.Label>Password</Form.Label>
               <PasswordInput
                 required
                 value={values.password}
@@ -313,7 +307,7 @@ export default function Signup({ userHasAuthenticated }) {
               className="position-relative"
             >
               <Form.Label>
-                Confirm password <span>*</span>
+                Confirm password
               </Form.Label>
               <PasswordInput
                 required

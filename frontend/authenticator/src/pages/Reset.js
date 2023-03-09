@@ -115,8 +115,8 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
             )}
 
             <Form.Text className="Login-text mt-2 mb-0">
-              Enter your email below and we will send a message to reset your
-              password.
+              Enter your email. If you have an account in the system, we will
+              send a message to reset your password.
             </Form.Text>
 
             <Form.Group
@@ -124,9 +124,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
               controlId="email"
               className="position-relative my-5"
             >
-              <Form.Label>
-                Business email <span>*</span>
-              </Form.Label>
+              <Form.Label>Business email</Form.Label>
               <Form.Control
                 required
                 autoFocus
@@ -208,9 +206,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
               size="lg"
               className="position-relative"
             >
-              <Form.Label>
-                Verification code <span>*</span>
-              </Form.Label>
+              <Form.Label>Verification code</Form.Label>
               <Form.Control
                 autoFocus
                 type="tel"
@@ -230,9 +226,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
               size="lg"
               className="position-relative"
             >
-              <Form.Label>
-                Password <span>*</span>
-              </Form.Label>
+              <Form.Label>Password</Form.Label>
               <PasswordInput
                 required
                 value={values.password}
@@ -251,9 +245,7 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
               size="lg"
               className="position-relative"
             >
-              <Form.Label>
-                Confirm password <span>*</span>
-              </Form.Label>
+              <Form.Label>Confirm password</Form.Label>
               <PasswordInput
                 required
                 onChange={handleChange}

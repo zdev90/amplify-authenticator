@@ -165,9 +165,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
               controlId="email"
               className="position-relative"
             >
-              <Form.Label>
-                Business email <span>*</span>
-              </Form.Label>
+              <Form.Label>Business email</Form.Label>
               <Form.Control
                 required
                 autoFocus
@@ -189,9 +187,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
               controlId="password"
               className="position-relative"
             >
-              <Form.Label>
-                Password <span>*</span>
-              </Form.Label>
+              <Form.Label>Password</Form.Label>
               <PasswordInput
                 required
                 value={values.password}

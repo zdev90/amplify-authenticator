@@ -172,9 +172,8 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
           )}
 
           <Form.Text className="Confirm-text">
-            We've emailed you a verification code.
-            <br />
-            If you don't see it in your inbox, check your spam folder.
+            We've emailed you a verification code. If you don't see it in your
+            inbox, check your spam folder.
           </Form.Text>
 
           <Form.Group
@@ -182,9 +181,7 @@ export default function VerificationForm({ userHasAuthenticated, user }) {
             size="lg"
             className="position-relative"
           >
-            <Form.Label>
-              Verification code <span>*</span>
-            </Form.Label>
+            <Form.Label>Verification code</Form.Label>
             <Form.Control
               autoFocus
               type="tel"
