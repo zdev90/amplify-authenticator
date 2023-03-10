@@ -251,7 +251,10 @@ export const handler = async (event, context) => {
         statusCode: 302,
         headers: {
           Location:
-            "/?client_id=" +
+            PORTAL_URL +
+            "/" +
+            parseAction(event) +
+            "?client_id=" +
             client_id +
             "&redirect_uri=" +
             redirect_uri +

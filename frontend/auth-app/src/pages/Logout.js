@@ -24,6 +24,7 @@ export default function Logout({ userHasAuthenticated }) {
         userHasAuthenticated(false);
         window.location.assign(logoutUri);
       } else {
+        urlSchema.validateSync(logoutUri);
         console.log("Invalid url parameters.");
       }
     }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Auth } from "aws-amplify";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -12,11 +12,8 @@ import Navbar from "../components/Navbar";
 import VerificationForm from "../components/VerificationForm";
 import Footer from "../components/Footer";
 import PasswordInput from "../components/PasswordInput";
-import {
-  storeTokens,
-  setTokenCookie,
-  setRefreshTokenCookie,
-} from "../lib/tokenHelper";
+import Loading from "../components/Loading";
+import { storeTokenAndRedirect } from "../lib/tokenHelper";
 
 import "./Login.css";
 
@@ -26,20 +23,6 @@ const schema = Yup.object().shape({
     .max(50, "Password is too long")
     .required("Password is required"),
   email: Yup.string().email("Email is invalid").required("Email is required"),
-});
-
-const queryParamSchema = Yup.object().shape({
-  authCode: Yup.string()
-    .required()
-    .matches(/^[a-zA-Z0-9-]*$/),
-  redirectUri: Yup.string()
-    .required()
-    .matches(
-      /^((?:http:\/\/)|(?:https:\/\/))(www.)?((?:[a-zA-Z0-9_-]+\.[a-z]{3})|(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?::\d+)?)|(localhost(?::\d+)?))([\/a-zA-Z0-9\.]*)$/
-    ),
-  clientState: Yup.string()
-    .optional()
-    .matches(/^[a-zA-Z0-9._=-]*$/),
 });
 
 export default function Login({ userHasAuthenticated, isAuthenticated }) {
@@ -56,62 +39,8 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
     try {
       // Log the user in
       await Auth.signIn(fields.email, fields.password);
+      await storeTokenAndRedirect();
       userHasAuthenticated(true);
-
-      // Get tokens
-      let authInfo = await Auth.currentSession();
-      let idToken = authInfo.idToken.jwtToken;
-      let accessToken = authInfo.accessToken.jwtToken;
-      let refreshToken = authInfo.refreshToken.token;
-      if (idToken && accessToken && refreshToken) {
-        setTokenCookie("id_token", idToken);
-        setTokenCookie("access_token", accessToken);
-
-        /*
-         * Set the refresh token cookie. Refresh token cannot be parsed for an an expiry so use the access token to get an expiry.
-         * Although the refresh token has a different (longer) expiry than the access token, this is for the purpose of fast SSO,
-         * so the refresh token cookie will get set again when the id or access token cookie expires
-         */
-        setRefreshTokenCookie(refreshToken, accessToken);
-      } else {
-        throw new Error(
-          "Inconsistent application state: Tokens missing from current session"
-        );
-      }
-
-      // Store tokens and redirect
-      let queryStringParams = new URLSearchParams(window.location.search);
-      let redirectUri = queryStringParams.get("redirect_uri");
-      let authCode = queryStringParams.get("authorization_code");
-      let clientState = queryStringParams.get("state");
-
-      if (
-        queryParamSchema.isValidSync({ redirectUri, authCode, clientState })
-      ) {
-        const response = await storeTokens(
-          authCode,
-          idToken,
-          accessToken,
-          refreshToken
-        );
-
-        if (response.status === 200) {
-          window.location.replace(
-            redirectUri +
-              "/?code=" +
-              authCode +
-              (clientState !== undefined ? "&state=" + clientState : "")
-          );
-        } else {
-          throw new Error(
-            "Could not store tokens. Server response: " + response.data
-          );
-        }
-      } else {
-        throw new Error("Invalid url parameters.");
-        // history.push("/");
-      }
-
       setIsLoading(false);
     } catch (e) {
       if (e.message === "User is not confirmed.") {
@@ -278,6 +207,11 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
     );
   }
 
+  if (isAuthenticated) {
+    storeTokenAndRedirect();
+    return <Loading />;
+  }
+
   return (
     <div className="Login">
       <Container>
@@ -287,6 +221,7 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
           <VerificationForm
             userHasAuthenticated={userHasAuthenticated}
             user={user}
+            isAuthenticated={isAuthenticated}
           />
         )}
         {!verifyCode && renderLoginForm()}

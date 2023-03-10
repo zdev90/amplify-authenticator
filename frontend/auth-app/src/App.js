@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Auth } from "aws-amplify";
 import { Route, Switch } from "react-router-dom";
+
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Signup from "./pages/Signup";
 import Reset from "./pages/Reset";
+import Loading from "./components/Loading";
+
 import "./App.css";
 
 function App() {
@@ -34,8 +37,8 @@ function App() {
     onLoad();
   }, []);
 
-  return (
-    !isAuthenticating && (
+  if (!isAuthenticating) {
+    return (
       <div className="App">
         <Switch>
           <Route exact path="/login">
@@ -52,8 +55,14 @@ function App() {
           </Route>
         </Switch>
       </div>
-    )
-  );
+    );
+  } else {
+    return (
+      <div className="App">
+        <Loading />
+      </div>
+    );
+  }
 }
 
 export default App;

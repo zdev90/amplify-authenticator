@@ -6,16 +6,17 @@ import { ApiStack } from "./ApiStack";
 import { ConfigStack } from "./ConfigStack";
 
 const TEST_PORTAL_URL = "http://localhost:3000";
-const TEST_CLIENT_PORTAL_URL = "http://localhost:3001";
+const TEST_CLIENT_PORTAL1_URL = "http://localhost:3001";
+const TEST_CLIENT_PORTAL2_URL = "http://localhost:3002";
 
 export function PortalStack({ stack, app }) {
   const { auth } = use(AuthStack);
   const { apiUrl, api } = use(ApiStack);
   const { configBucket, configObjectKey } = use(ConfigStack);
 
-  // Authenticator frontend app
-  const portal = new StaticSite(stack, "AuthenticatorPortal", {
-    path: "frontend/authenticator",
+  // Frontend auth app
+  const portal = new StaticSite(stack, "AuthPortal", {
+    path: "frontend/auth-app",
     buildCommand: "npm run build",
     buildOutput: "build",
     environment: {
@@ -42,14 +43,22 @@ export function PortalStack({ stack, app }) {
     }
   );
 
-  // const PORTAL_URL = new Config.Parameter(stack, "PORTAL_URL", {
-  //   value: portalUrl,
-  // });
-  // api.bind([PORTAL_URL]);
+  // Client frontend app1
+  const clientPortal1 = new StaticSite(stack, "ClientPortal1", {
+    path: "frontend/client-example1",
+    buildCommand: "npm run build",
+    buildOutput: "build",
+    environment: {
+      REACT_APP_REGION: app.region,
+      REACT_APP_USER_POOL_ID: auth.userPoolId,
+      REACT_APP_IDENTITY_POOL_ID: auth.cognitoIdentityPoolId || "",
+      REACT_APP_BROKER_URL: apiUrl,
+    },
+  });
 
-  // Client frontend app
-  const clientPortal = new StaticSite(stack, "AuthenticatorClientPortal", {
-    path: "frontend/authenticator-client",
+  // Client frontend app2
+  const clientPortal2 = new StaticSite(stack, "ClientPortal2", {
+    path: "frontend/client-example2",
     buildCommand: "npm run build",
     buildOutput: "build",
     environment: {
@@ -62,15 +71,17 @@ export function PortalStack({ stack, app }) {
 
   // Show the endpoint in the output
   stack.addOutputs({
-    AuthenticatorAppUrl: portalUrl,
-    ClientAppUrl: clientPortal.url || TEST_CLIENT_PORTAL_URL,
+    AuthAppUrl: portalUrl,
+    ClientApp1Url: clientPortal1.url || TEST_CLIENT_PORTAL1_URL,
+    ClientApp2Url: clientPortal2.url || TEST_CLIENT_PORTAL2_URL,
     ConfigBucket: configBucket.bucketName,
   });
 
   return {
     portal,
     portalUrl,
-    clientPortal,
+    clientPortal1,
+    clientPortal2,
     uploadConfig,
   };
 }

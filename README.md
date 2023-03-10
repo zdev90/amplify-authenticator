@@ -18,7 +18,7 @@ Make sure your local machine has `Node.js 16` and `npm 7` installed.
 yarn install
 ```
 
-In stall in the project root, `frontend/authenticator`, and `frontend/authenticator-client`.
+Install in the project root, `frontend/auth-app`, `frontend/client-example1` and `frontend/client-example2`.
 
 ### Set the AWS environmental variables
 
@@ -34,7 +34,7 @@ After the first deployment, add an app client and set up the hosted UI([document
 
 For development purpose, you can set callback URLs as `http://localhost:3001`
 
-Retrieve app client id and set `REACT_APP_USER_POOL_CLIENT_ID` environment variable in `frontend/authenticator-client/.env`
+Retrieve app client id and set `REACT_APP_USER_POOL_CLIENT_ID` environment variable in `frontend/client-example1/.env` and `frontend/client-example2/.env` (`.env.local` in development mode)
 
 ## Commands
 

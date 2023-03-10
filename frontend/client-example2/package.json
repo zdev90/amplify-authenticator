@@ -1,5 +1,5 @@
 {
-  "name": "authenticator-client",
+  "name": "client-example2",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

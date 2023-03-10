@@ -9,8 +9,9 @@
     "deploy": "sst deploy",
     "remove": "sst remove",
     "console": "sst console",
-    "auth-app": "cd ./frontend/authenticator && npm start",
-    "auth-app-client": "cd ./frontend/authenticator-client && npm start"
+    "auth-app": "cd ./frontend/auth-app && npm start",
+    "client-example1": "cd ./frontend/client-example1 && npm start",
+    "client-example2": "cd ./frontend/client-example1 && npm start"
   },
   "devDependencies": {
     "aws-cdk-lib": "2.62.2",

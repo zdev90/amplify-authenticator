@@ -12,6 +12,8 @@ import Navbar from "../components/Navbar";
 import VerificationForm from "../components/VerificationForm";
 import PasswordInput from "../components/PasswordInput";
 import Footer from "../components/Footer";
+import Loading from "../components/Loading";
+import { storeTokenAndRedirect } from "../lib/tokenHelper";
 
 import "./Signup.css";
 
@@ -45,7 +47,7 @@ const schema = Yup.object().shape({
     .oneOf([true], "Age confirmation is required"),
 });
 
-export default function Signup({ userHasAuthenticated }) {
+export default function Signup({ userHasAuthenticated, isAuthenticated }) {
   const [newUser, setNewUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -393,6 +395,11 @@ export default function Signup({ userHasAuthenticated }) {
     );
   }
 
+  if (isAuthenticated) {
+    storeTokenAndRedirect();
+    return <Loading />;
+  }
+
   return (
     <div className="Signup">
       <Container>
@@ -404,6 +411,7 @@ export default function Signup({ userHasAuthenticated }) {
           <VerificationForm
             userHasAuthenticated={userHasAuthenticated}
             user={newUser}
+            isAuthenticated={isAuthenticated}
           />
         )}
 
