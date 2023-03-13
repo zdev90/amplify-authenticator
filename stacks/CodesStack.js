@@ -23,6 +23,7 @@ export function CodesStack({ stack, app }) {
         sortKey: "redirect_uri",
       },
     },
+    timeToLiveAttribute: "record_expiry",
     stream: false,
   });
 
