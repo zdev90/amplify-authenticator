@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import * as Yup from "yup";
 
 import { eraseCookie } from "../lib/cookieHelper";
+import Loading from "../components/Loading";
 
 const urlSchema = Yup.string()
   .required()
@@ -32,5 +33,5 @@ export default function Logout({ userHasAuthenticated }) {
     logout();
   }, [userHasAuthenticated]);
 
-  return <></>;
+  return <Loading />;
 }

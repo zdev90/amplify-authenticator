@@ -7,6 +7,7 @@
     "dev": "sst dev",
     "build": "sst build",
     "deploy": "sst deploy",
+    "deploy:non-prod": "sst deploy --stage non-prod",
     "remove": "sst remove",
     "console": "sst console",
     "auth-app": "cd ./frontend/auth-app && npm start",

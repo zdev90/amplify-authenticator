@@ -1,9 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Amplify } from "aws-amplify";
-import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
+
 import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import Shortbread from "./components/Shortbread";
+
+import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Init Amplify
@@ -29,6 +33,7 @@ Amplify.configure({
 ReactDOM.render(
   <React.StrictMode>
     <Router>
+      <Shortbread />
       <App />
     </Router>
   </React.StrictMode>,
