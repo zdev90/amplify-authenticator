@@ -9,7 +9,7 @@ trigger:
       - dev
   
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-latest
 
 parameters:
   - name: environment
@@ -18,22 +18,12 @@ parameters:
     values:
       - stage
       - production
-  - name: appMode
-    type: string
-    default: primary
-    values:
-      - primary
-      - failover
 
 variables:
   # Set group variables based on environment & mode
-  - ${{ if and(eq(parameters.environment, 'production') ,eq(parameters.appMode, 'primary')) }}:
-    - group: AWS Prod Credentials
-  - ${{ if and(eq(parameters.environment, 'production') ,eq(parameters.appMode, 'failover')) }}:
-    - group: AWS Prod Credentials
-  - ${{ if and(eq(parameters.environment, 'stage') ,eq(parameters.appMode, 'primary')) }}:
-    - group: AWS Non-Prod Credentials
-  - ${{ if and(eq(parameters.environment, 'stage') ,eq(parameters.appMode, 'failover')) }}:
+  - ${{ if eq(parameters.environment, 'production') }}:
+    - group: AWS Cognito Production Credentials
+  - ${{ if eq(parameters.environment, 'stage') }}:
     - group: AWS Non-Prod Credentials
 
 steps:
@@ -46,9 +36,9 @@ steps:
   displayName: 'npm install and build'
 
 - ${{ if eq(parameters.environment, 'stage') }}:
-  - script: npm run deploy-stage
+  - script: npm run deploy:non-prod
     displayName: Deploy Stage
 
 - ${{ if eq(parameters.environment, 'production') }}:
-  - script: npm run deploy-prod
+  - script: npm run deploy:prod
     displayName: Deploy Production

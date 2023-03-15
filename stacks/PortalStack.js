@@ -35,11 +35,8 @@ export function PortalStack({ stack, app }) {
     },
   });
 
-  stackOutputs["AuthAppUrl"] = portal.url || TEST_PORTAL_URL;
+  stackOutputs["AuthAppUrl"] = returnValue["portalUrl"] = portal.url || TEST_PORTAL_URL;
   returnValue["portal"] = portal;
-  returnValue[""]
-
-  const portalUrl = portal.url || TEST_PORTAL_URL;
 
   const uploadConfig = new aws_s3_deployment.BucketDeployment(
     stack,
@@ -47,7 +44,7 @@ export function PortalStack({ stack, app }) {
     {
       sources: [
         aws_s3_deployment.Source.jsonData(configObjectKey, {
-          PORTAL_URL: portalUrl,
+          PORTAL_URL: stackOutputs.AuthAppUrl,
         }),
       ],
       destinationBucket: configBucket.cdk.bucket,
@@ -95,9 +92,4 @@ export function PortalStack({ stack, app }) {
   stack.addOutputs(stackOutputs);
 
   return returnValue;
-}
-
-const portalValues = {
-  stackOutputs: {}
-
 }
