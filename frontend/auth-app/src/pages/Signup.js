@@ -123,7 +123,13 @@ export default function Signup({ userHasAuthenticated, isAuthenticated }) {
               size="lg"
               className="position-relative"
             >
-              <Form.Label>First name</Form.Label>
+              <Form.Label>
+                First name
+                <div>
+                  This name will be printed on your badge. Your legal name, if
+                  different, can be provided in the event profile.
+                </div>
+              </Form.Label>
               <Form.Control
                 required
                 autoFocus
@@ -328,7 +334,7 @@ export default function Signup({ userHasAuthenticated, isAuthenticated }) {
               <Form.Check
                 required
                 name="confirmAge"
-                label="I confirm that I will be at least 18 years old by the first day of the first event I register for."
+                label="I confirm that for any events I register for, I will be at least 18 years old on the first day of the event."
                 onChange={handleChange}
                 isInvalid={!!errors.confirmAge}
                 feedback={errors.confirmAge}

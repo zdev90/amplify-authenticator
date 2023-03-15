@@ -98,7 +98,8 @@ form .form-group .form-label span {
   text-align: left;
 }
 
-form .form-group .form-label div {
+form .form-group .form-label div,
+.title div {
   color: rgb(104, 112, 120);
   font-family: AmazonEmberDisplay;
   font-size: 12px;
