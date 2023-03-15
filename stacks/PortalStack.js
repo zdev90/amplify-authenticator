@@ -13,6 +13,12 @@ export function PortalStack({ stack, app }) {
   const { auth } = use(AuthStack);
   const { apiUrl, api } = use(ApiStack);
   const { configBucket, configObjectKey } = use(ConfigStack);
+  
+  const stageNames = [
+    "non-prod",
+    "production",
+    "production-failover"
+  ];
 
   const stackOutputs = {
     ConfigBucket: configBucket.bucketName
@@ -20,7 +26,6 @@ export function PortalStack({ stack, app }) {
 
   const returnValue = {};
 
-  console.log(app.stage);
   // Frontend auth app
   const portal = new StaticSite(stack, "AuthPortal", {
     path: "frontend/auth-app",
@@ -53,7 +58,7 @@ export function PortalStack({ stack, app }) {
 
   returnValue["uploadConfig"] = uploadConfig;
 
-  if (app.stage !== "production") {
+  if (!stageNames.includes(app.stage)) {
     // Client frontend app1
     const clientPortal1 = new StaticSite(stack, "ClientPortal1", {
       path: "frontend/client-example1",

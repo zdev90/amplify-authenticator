@@ -12,14 +12,4 @@ echo "Installing Authenticator Dependencies"
 cd ../../frontend/auth-app
 npm install
 
-# # install authenticator
-# echo "Installing Client Example 1 Dependencies"
-# cd ../../frontend/client-example1
-# npm install
-
-# # install authenticator
-# echo "Installing Client Example 2 Dependencies"
-# cd ../../frontend/client-example2
-# npm install
-
 cd ../../
