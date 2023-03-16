@@ -21,10 +21,12 @@ const schema = Yup.object().shape({
   firstName: Yup.string()
     .min(3, "First name is too short")
     .max(50, "First name is too long")
+    .matches(/^[A-Za-z ]*$/, "First name is invalid")
     .required("First name is required"),
   lastName: Yup.string()
     .min(3, "Last name is too short")
     .max(50, "Last name is too long")
+    .matches(/^[A-Za-z ]*$/, "Last name is invalid")
     .required("Last name is required"),
   password: Yup.string()
     .min(12, "Password must contain at least 12 characters")
@@ -402,7 +404,11 @@ export default function Signup({ userHasAuthenticated, isAuthenticated }) {
   }
 
   if (isAuthenticated) {
-    storeTokenAndRedirect();
+    try {
+      storeTokenAndRedirect();
+    } catch (e) {
+      console.error(e);
+    }
     return <Loading />;
   }
 

@@ -208,7 +208,11 @@ export default function Login({ userHasAuthenticated, isAuthenticated }) {
   }
 
   if (isAuthenticated) {
-    storeTokenAndRedirect();
+    try {
+      storeTokenAndRedirect();
+    } catch (e) {
+      console.error(e);
+    }
     return <Loading />;
   }
 

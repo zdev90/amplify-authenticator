@@ -11,7 +11,9 @@ import { storeTokenAndRedirect } from "../lib/tokenHelper";
 import "./VerificationForm.css";
 
 const confirmSchema = Yup.object().shape({
-  confirmationCode: Yup.string().required("Verification code is required"),
+  confirmationCode: Yup.string()
+    .matches(/^[A-Za-z]*$/, "Verification code is invalid")
+    .required("Verification code is required"),
 });
 
 export default function VerificationForm({
