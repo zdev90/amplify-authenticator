@@ -5,7 +5,7 @@ import { CodesStack } from "./stacks/CodesStack";
 import ConfigStack from "./stacks/ConfigStack";
 
 export default {
-  config(_input) {
+  config(input) {
     return {
       name: "auth-app",
       region: "us-east-2",
