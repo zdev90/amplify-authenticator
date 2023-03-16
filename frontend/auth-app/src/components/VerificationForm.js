@@ -12,7 +12,7 @@ import "./VerificationForm.css";
 
 const confirmSchema = Yup.object().shape({
   confirmationCode: Yup.string()
-    .matches(/^[A-Za-z]*$/, "Verification code is invalid")
+    .matches(/^[\d]*$/, "Verification code is invalid")
     .required("Verification code is required"),
 });
 
