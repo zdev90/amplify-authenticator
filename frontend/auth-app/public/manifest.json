@@ -1,6 +1,6 @@
 {
   "short_name": "Auth App",
-  "name": "Cognito authentication app",
+  "name": "Cognito authentication app for AWS events",
   "icons": [
     {
       "src": "AWS_FavIcon.svg",
