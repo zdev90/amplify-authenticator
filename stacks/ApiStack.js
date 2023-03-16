@@ -10,6 +10,15 @@ export function ApiStack({ stack, app }) {
 
   // Create an HTTP API
   const api = new Api(stack, "Api", {
+    authorizers: {
+      cognitoAuthorizer: {
+        type: "user_pool",
+        userPool: {
+          id: auth.userPoolId,
+          clientIds: [auth.userPoolClientId],
+        },
+      },
+    },
     defaults: {
       function: {
         timeout: 120,
@@ -30,6 +39,17 @@ export function ApiStack({ stack, app }) {
       "POST /oauth2/token": "packages/functions/src/token.handler",
       "POST /storage": "packages/functions/src/storage.handler",
       "GET /logout": "packages/functions/src/logout.handler",
+      "POST /oauth2/userInfo": {
+        authorizer: "cognitoAuthorizer",
+        authorizationScopes: [
+          "aws.cognito.signin.user.admin",
+          "email",
+          "openid",
+          "phone",
+          "profile",
+        ],
+        function: "packages/functions/src/userInfo.handler",
+      },
     },
   });
 

@@ -22,7 +22,7 @@ Amplify.configure({
   API: {
     endpoints: [
       {
-        name: "random-api",
+        name: "auth-api",
         region: process.env.REACT_APP_REGION,
         endpoint: process.env.REACT_APP_API_URL,
       },

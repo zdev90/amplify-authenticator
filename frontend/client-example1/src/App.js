@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Auth, Hub } from "aws-amplify";
 import Button from "react-bootstrap/Button";
@@ -32,6 +33,22 @@ function App() {
         const user = await Auth.currentAuthenticatedUser();
         userHasAuthenticated(_isAuthenticated(user));
         setUser(user);
+
+        // Fetch user info
+        const session = await Auth.currentSession();
+        const accessToken = session.getAccessToken();
+        const jwt = accessToken.getJwtToken();
+        const response = await axios.post(
+          `${process.env.REACT_APP_BROKER_URL}/oauth2/userInfo`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log("userInfo: ", response);
       } catch (e) {
         if (e !== "The user is not authenticated") {
           alert(e);
