@@ -201,6 +201,17 @@ export default function Reset({ userHasAuthenticated, isAuthenticated }) {
               email.
             </Form.Text>
 
+            {error && (
+              <Alert
+                variant="danger"
+                onClose={() => setError(null)}
+                dismissible
+                className="m-0"
+              >
+                {error}
+              </Alert>
+            )}
+
             <Form.Group
               controlId="confirmationCode"
               size="lg"

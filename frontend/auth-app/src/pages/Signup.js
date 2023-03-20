@@ -107,7 +107,13 @@ export default function Signup({ userHasAuthenticated, isAuthenticated }) {
           errors,
         }) => (
           <Form noValidate onSubmit={handleSubmit} className="Signup-form">
-            <div className="title">Create account</div>
+            <div className="title">
+              Create account
+              <div>
+                This name will be printed on your badge. Your legal name, if
+                different, can be provided in the event profile.
+              </div>
+            </div>
 
             {error && (
               <Alert
@@ -125,13 +131,7 @@ export default function Signup({ userHasAuthenticated, isAuthenticated }) {
               size="lg"
               className="position-relative"
             >
-              <Form.Label>
-                First name
-                <div>
-                  This name will be printed on your badge. Your legal name, if
-                  different, can be provided in the event profile.
-                </div>
-              </Form.Label>
+              <Form.Label>First name</Form.Label>
               <Form.Control
                 required
                 autoFocus

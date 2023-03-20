@@ -7,6 +7,17 @@
     max-width: 711px;
   }
 
+  .Confirm-registration a {
+    color: #16191f !important;
+    text-decoration: underline;
+  }
+
+  .Confirm-registration a:hover,
+  .Confirm-registration a:focus,
+  .Confirm-registration a:active {
+    color: #545b64 !important;
+  }
+
   .Confirm-registration .Confirm-text {
     align-self: stretch;
     flex-grow: 0;
