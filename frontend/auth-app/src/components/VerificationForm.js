@@ -104,8 +104,17 @@ export default function VerificationForm({
           )}
 
           <Form.Text className="Confirm-text">
-            We've emailed you a verification code. If you don't see it in your
-            inbox, check your spam folder.
+            We've emailed you a verification code from{" "}
+            <a
+              href="mailto: no-reply@awsevents.com"
+              target="_blank"
+              rel="noreferrer"
+            >
+              no-reply@awsevents.com
+            </a>
+            . It may take several minutes to arrive, depending on your email’s
+            security settings. If you don't see it in your inbox, check your
+            spam folder.
           </Form.Text>
 
           <Form.Group
